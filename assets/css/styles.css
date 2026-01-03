@@ -1,0 +1,259 @@
+:root {
+    --black: #000;
+    --white: #fff;
+    --gray: #f2f2f2;
+    --green: #25d366;
+
+    /* Colores de marca */
+    --primary: #5487c5;     /* ajustaremos luego */
+    --secondary: #1f3b73;
+
+    /* Bordes */
+    --border-soft: rgba(0, 0, 0, 0.08);
+}
+
+
+/* Reset básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    background: var(--gray);
+}
+
+/* HEADER 
+.header-top,
+.header-bottom {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+}*/
+
+.header-top {
+    height: 70px;
+	background: var(--secondary);
+}
+
+.header-bottom {
+    height: 70px;
+	background: var(--white);
+}
+
+/* Contenedor */
+.header-container {
+    width: 100%;
+    height: 100%;
+    padding: 0 35px;   /* margen pequeño real */
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.logo {
+    margin-right: 10px;
+}
+
+.logo img {
+    height: 40px;
+    display: block;
+	margin-right: 20px;
+}
+
+/* Botón Categorías */
+.btn-categories {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--gray);
+    border: 1px solid var(--white);
+    padding: 10px 14px;
+    cursor: pointer;
+	border-radius: 4px;
+	margin-left: auto;
+}
+
+/* Contenedor del icono */
+.btn-categories .icon {
+    width: 18px;
+    height: 12px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Líneas */
+.btn-categories .icon::before,
+.btn-categories .icon::after,
+.btn-categories .icon span {
+    content: "";
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: #000;
+}
+
+/* Posiciones */
+.btn-categories .icon::before {
+    top: 0;
+}
+
+.btn-categories .icon span {
+    top: 5px;
+}
+
+.btn-categories .icon::after {
+    bottom: 0;
+}
+
+/* ANIMACIÓN */
+@keyframes slide-reappear {
+    0% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    40% {
+        transform: translateX(120%);
+        opacity: 0;
+    }
+    41% {
+        transform: translateX(-120%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Hover: la animación SOLO se dispara al entrar */
+.btn-categories:hover .icon::before {
+    animation: slide-reappear 0.8s ease forwards;
+}
+
+.btn-categories:hover .icon span {
+    animation: slide-reappear 0.8s ease forwards;
+    animation-delay: 0.06s;
+}
+
+.btn-categories:hover .icon::after {
+    animation: slide-reappear 0.8s ease forwards;
+    animation-delay: 0.2s;
+}
+
+/* Buscador */
+.search-box {
+    display: flex;
+    flex: 1;               /* ocupa todo el espacio disponible */
+    max-width: 1200px;      /* Ancho del Buscador */
+    border: 1px solid var(--white);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.search-box input {
+    flex: 1;
+    border: none;
+    padding: 10px;
+    font-size: 14px;
+    outline: none;
+}
+
+.search-box button {
+    background: var(--secondary);
+    /*color: var(--white);*/
+    border: none;
+    padding: 0 12px;      
+    height: auto;         
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 8px;
+	transition: background-color 0.3s ease; /* suaviza el hover */
+}
+
+/* HOVER del botón */
+.search-box button:hover {
+    background: var(--primary); /* cambia a color primario */
+}
+
+.btn-whatsapp {
+	margin-left: auto;
+    background: none;        /* elimina el verde de fondo */
+    border: none;            /* elimina borde si tenía */
+    padding: 0;              /* elimina padding innecesario */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    width: 120px;             /* ajustar tamaño del botón */
+}
+
+.btn-whatsapp img {
+    width: 100%;             /* la imagen ocupa todo el botón */
+    height: auto;			 /* mantiene proporción */
+    display: block;
+}
+
+
+/* Responsive */
+@media (max-width: 768px) {
+
+    .header,
+    .header-top {
+        height: auto;
+        min-height: unset;
+    }
+
+    .header-container {
+        flex-wrap: wrap;
+        align-items: center;
+    }
+
+    /* Categorías */
+    .btn-categories {
+        order: 1;
+        width: 40px;
+        height: 40px;
+        padding: 0;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .btn-categories .text {
+        display: none;
+    }
+
+    .btn-categories .icon {
+        margin: 0;
+    }
+
+    /* Logo centrado */
+    .logo {
+        order: 2;
+        margin: 0 auto;
+    }
+
+    .logo img {
+        height: 32px;
+    }
+
+    /* WhatsApp fuera */
+    .btn-whatsapp {
+        display: none;
+    }
+
+    /* Buscador debajo */
+    .search-box {
+        order: 3;
+        width: 100%;
+        flex: 0 0 100%;
+        margin-top: 8px;
+    }
+}
+
+
+
