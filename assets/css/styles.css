@@ -33,14 +33,15 @@ body {
 }*/
 
 .header-top {
-    height: 70px;
+    width: 100%;
 	background: var(--secondary);
+	overflow: visible;
 }
 
-.header-bottom {
+/*.header-bottom {
     height: 70px;
 	background: var(--white);
-}
+}*/
 
 /* Contenedor */
 .header-container {
@@ -201,23 +202,23 @@ body {
 
 /* Responsive */
 @media (max-width: 768px) {
-
-    .header,
-    .header-top {
-        height: auto;
-        min-height: unset;
+	
+	.header-top {
+        height: auto;        /* 🔑 permite crecer */
     }
 
     .header-container {
+        display: flex;
         flex-wrap: wrap;
         align-items: center;
+        padding: 8px;
     }
 
-    /* Categorías */
+    /* BOTÓN CATEGORÍAS */
     .btn-categories {
         order: 1;
-        width: 40px;
-        height: 40px;
+        width: 35px;
+        height: 35px;
         padding: 0;
         justify-content: center;
         flex-shrink: 0;
@@ -227,33 +228,32 @@ body {
         display: none;
     }
 
-    .btn-categories .icon {
-        margin: 0;
-    }
-
-    /* Logo centrado */
+    /* LOGO */
     .logo {
         order: 2;
-        margin: 0 auto;
+        margin-left: 8px;
+        flex-shrink: 0;
     }
 
     .logo img {
-        height: 32px;
+        height: 40px;
     }
 
-    /* WhatsApp fuera */
+    /* WHATSAPP FUERA */
     .btn-whatsapp {
         display: none;
     }
 
-    /* Buscador debajo */
+    /* BUSCADOR: SIEMPRE ABAJO */
     .search-box {
         order: 3;
+        flex-basis: 100%;   /* 🔑 fuerza nueva fila */
         width: 100%;
-        flex: 0 0 100%;
-        margin-top: 8px;
+        /*margin-top: 1px;*/
     }
 }
+
+
 
 
 
