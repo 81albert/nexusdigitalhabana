@@ -456,8 +456,20 @@ body.sidebar-open .sidebar-overlay {
         list-style: none;
         width: 100%;
         margin-top: 8px;
-        padding-left: 42px; /* alineado con el texto */
-        display: none;
+        padding-left: 42px;
+
+        max-height: 0;
+        overflow: hidden;
+        opacity: 0;
+
+        transition:
+            max-height 0.35s ease,
+            opacity 0.25s ease;
+    }
+
+    .category-item.open .subcategory-inline {
+        max-height: 500px; /* suficiente para tus subcategorías */
+        opacity: 1;
     }
 
     .subcategory-inline li {
@@ -471,19 +483,21 @@ body.sidebar-open .sidebar-overlay {
         display: block;
     }
 
-    .category-item.open .subcategory-inline {
-        display: block;
-    }
-	
-	 .category-item {
+    .category-item {
         flex-wrap: wrap;
     }
 
     .cat-left {
-        flex: 1 1 auto;   /* ocupa todo el espacio disponible */
+        flex: 1 1 auto;
     }
 
     .cat-expand {
-        flex-shrink: 0;   /* no se encoge */
+        flex-shrink: 0;
+        transition: transform 0.3s ease;
+    }
+
+    .category-item.open .cat-expand {
+        transform: rotate(90deg);
     }
 }
+
