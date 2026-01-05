@@ -44,34 +44,88 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /* ABRIR SUBCATEGORÍAS */
     expandButtons.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            e.stopPropagation();
+    btn.addEventListener('click', (e) => {
+        e.stopPropagation();
 
-            const category = btn.dataset.category;
+        const category = btn.dataset.category;
+        const isMobile = window.innerWidth <= 768;
+        const categoryItem = btn.closest('.category-item');
 
-            subcategoryList.innerHTML = '';
+        /* ======================
+           MÓVIL: acordeón
+        ====================== */
+        if (isMobile) {
+
+            // Toggle
+            if (categoryItem.classList.contains('open')) {
+                categoryItem.classList.remove('open');
+                return;
+            }
+
+            // Cerrar otros
+            document.querySelectorAll('.category-item.open')
+                .forEach(item => item.classList.remove('open'));
+
+            let html = '';
 
             if (category === 'componentes') {
-                subcategoryList.innerHTML = `
-                    <li><a href="#">Todo en Componentes</a></li>
-                    <li><a href="#">Placa base</a></li>
-                    <li><a href="#">Almacenamiento</a></li>
-                    <li><a href="#">Sistema de enfriamiento</a></li>
-                    <li><a href="#">Fuente de alimentación</a></li>
-                    <li><a href="#">Chasis</a></li>
+                html = `
+                    <ul class="subcategory-inline">
+                        <li><a href="#">Todo en Componentes</a></li>
+                        <li><a href="#">Placa base</a></li>
+                        <li><a href="#">Almacenamiento</a></li>
+                        <li><a href="#">Sistema de enfriamiento</a></li>
+                        <li><a href="#">Fuente de alimentación</a></li>
+                        <li><a href="#">Chasis</a></li>
+                    </ul>
                 `;
             }
 
             if (category === 'perifericos') {
-                subcategoryList.innerHTML = `
-                    <li><a href="#">Todo en Periféricos</a></li>
-                    <li><a href="#">Monitores</a></li>
-                    <li><a href="#">Teclado / Mouse</a></li>
+                html = `
+                    <ul class="subcategory-inline">
+                        <li><a href="#">Todo en Periféricos</a></li>
+                        <li><a href="#">Monitores</a></li>
+                        <li><a href="#">Teclado / Mouse</a></li>
+                    </ul>
                 `;
             }
 
-            document.body.classList.add('sub-open');
-        });
+            if (!categoryItem.querySelector('.subcategory-inline')) {
+                categoryItem.insertAdjacentHTML('beforeend', html);
+            }
+
+            categoryItem.classList.add('open');
+            return;
+        }
+
+        /* ======================
+           DESKTOP: sidebar secundario (como ahora)
+        ====================== */
+        subcategoryList.innerHTML = '';
+
+        if (category === 'componentes') {
+            subcategoryList.innerHTML = `
+                <li><a href="#">Todo en Componentes</a></li>
+                <li><a href="#">Placa base</a></li>
+                <li><a href="#">Almacenamiento</a></li>
+                <li><a href="#">Sistema de enfriamiento</a></li>
+                <li><a href="#">Fuente de alimentación</a></li>
+                <li><a href="#">Chasis</a></li>
+            `;
+        }
+
+        if (category === 'perifericos') {
+            subcategoryList.innerHTML = `
+                <li><a href="#">Todo en Periféricos</a></li>
+                <li><a href="#">Monitores</a></li>
+                <li><a href="#">Teclado / Mouse</a></li>
+            `;
+        }
+
+        document.body.classList.add('sub-open');
     });
+});
+
 
 });
