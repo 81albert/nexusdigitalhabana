@@ -317,9 +317,6 @@ body {
     .btn-whatsapp { display: none; }
 }
 
-/* Desktop seguro: logo primero */
-@med
-
 /* Overlay */
 .sidebar-overlay {
     position: fixed;
@@ -328,7 +325,7 @@ body {
     opacity: 0;
     pointer-events: none;
     transition: opacity .3s ease;
-    z-index: 2000;
+    z-index: 900;
 }
 
 body.sidebar-open .sidebar-overlay {
@@ -450,7 +447,43 @@ body.sidebar-open .sidebar-overlay {
     display: block;          /* asegura que el padding funcione bien */
 }
 
+/* =========================
+   MÓVIL: subcategorías en acordeón
+========================= */
+@media (max-width: 768px) {
 
+    .subcategory-inline {
+        list-style: none;
+        width: 100%;
+        margin-top: 8px;
+        padding-left: 42px; /* alineado con el texto */
+        display: none;
+    }
 
+    .subcategory-inline li {
+        padding: 8px 0;
+    }
 
+    .subcategory-inline a {
+        text-decoration: none;
+        color: #000;
+        font-weight: 500;
+        display: block;
+    }
 
+    .category-item.open .subcategory-inline {
+        display: block;
+    }
+	
+	 .category-item {
+        flex-wrap: wrap;
+    }
+
+    .cat-left {
+        flex: 1 1 auto;   /* ocupa todo el espacio disponible */
+    }
+
+    .cat-expand {
+        flex-shrink: 0;   /* no se encoge */
+    }
+}
