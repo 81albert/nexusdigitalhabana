@@ -13,18 +13,20 @@
     <div class="header-top">
         <div class="header-container">
 
-            <!-- Logo -->
+            <div class="header-top-row">
+			<!-- Logo -->
             <div class="logo">
                 <img src="assets/img/logo_wide.webp" alt="Nexus Digital Habana">
             </div>
-
-            <!-- Botón categorías -->
-            <button class="btn-categories">
+			
+			<!-- Botón categorías -->
+			<button id="btnCategories" class="btn-categories">
 				<span class="icon"><span></span></span>
 				<span class="text">Categorías</span>
 			</button>
-
-
+		
+			
+		</div>
             <!-- Buscador -->
             <div class="search-box">
                 <input type="text" placeholder="Buscar productos...">
@@ -52,7 +54,47 @@
     </div>-->
 </header>
 
+<!-- Overlay -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- Sidebar principal -->
+<aside class="sidebar sidebar-main" id="sidebarMain">
+    <button class="sidebar-close" id="closeSidebar">✕</button>
+
+    <ul class="category-list">
+        <li class="category-item">
+            <div class="cat-left">
+                <img src="assets/icons/componentes.svg" alt="">
+                <a href="#">Componentes</a>
+            </div>
+            <button class="cat-expand" data-category="componentes">›</button>
+        </li>
+
+        <li class="category-item">
+            <div class="cat-left">
+                <img src="assets/icons/perifericos.svg" alt="">
+                <a href="#">Periféricos</a>
+            </div>
+            <button class="cat-expand" data-category="perifericos">›</button>
+        </li>
+
+        <li class="category-item">
+            <div class="cat-left">
+                <img src="assets/icons/ofertas.svg" alt="">
+                <a href="#">Ofertas</a>
+            </div>
+        </li>
+    </ul>
+</aside>
+
+<!-- Sidebar secundario -->
+<aside class="sidebar sidebar-sub" id="sidebarSub">
+    <button class="sidebar-back" id="backSub">←</button>
+    <ul class="subcategory-list" id="subcategoryList"></ul>
+</aside>
+
 <script src="js/main.js"></script>
+
 </body>
 </html>
 
