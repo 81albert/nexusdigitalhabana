@@ -421,10 +421,11 @@ body.sidebar-open .sidebar-overlay {
     height: 22px;
 }
 
+/*Categorías*/
 .cat-left a {
     text-decoration: none;
     color: #000;
-    font-weight: 500;
+    font-weight: 700; /*Negrita*/
 }
 
 /* Flecha */
