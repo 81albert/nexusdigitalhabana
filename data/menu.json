@@ -2,30 +2,30 @@
     "componentes": {
       "label": "Componentes",
       "icon": "assets/icons/componentes.png",
-      "url": "#",
+      "url": "/componentes/todo",
       "items": [
-        { "label": "Todo en Componentes", "url": "#" },
-        { "label": "Placa base", "url": "#" },
-        { "label": "Almacenamiento", "url": "#" },
-        { "label": "Sistema de enfriamiento", "url": "#" },
-        { "label": "Fuente de alimentación", "url": "#" },
-        { "label": "Chasis", "url": "#" }
+        { "label": "Todo en Componentes", "url": "/componentes/todo" },
+        { "label": "Placa base", "url": "/componentes/placa-base" },
+        { "label": "Almacenamiento", "url": "/componentes/almacenamiento" },
+        { "label": "Sistema de enfriamiento", "url": "/componentes/sistema-de-enfriamiento" },
+        { "label": "Fuente de alimentación", "url": "/componentes/fuente-de-alimentacion" },
+        { "label": "Chasis", "url": "/componentes/chasis" }
       ]
     },
     "perifericos": {
       "label": "Periféricos",
       "icon": "assets/icons/perifericos.png",
-      "url": "#",
+      "url": "/perifericos/todo",
       "items": [
-        { "label": "Todo en Periféricos", "url": "#" },
-        { "label": "Monitores", "url": "#" },
-        { "label": "Teclado / Mouse", "url": "#" }
+        { "label": "Todo en Periféricos", "url": "/perifericos/todo" },
+        { "label": "Monitores", "url": "/perifericos/monitores" },
+        { "label": "Teclado / Mouse", "url": "/perifericos/teclado-mouse" }
       ]
     },
     "ofertas": {
       "label": "Ofertas",
       "icon": "assets/icons/ofertas.png",
-      "url": "/ofertas",
+      "url": "/ofertas/todo",
       "items": []
     }
   }
