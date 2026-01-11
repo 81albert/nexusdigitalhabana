@@ -11,49 +11,33 @@
 <body>
 
 <header class="header">
-    <!-- Barra superior -->
     <div class="header-top">
         <div class="header-container">
 
             <div class="header-top-row">
-			<!-- Logo -->
             <div class="logo">
                 <img src="assets/img/logo_wide.webp" alt="Nexus Digital Habana">
             </div>
 			
-			<!-- Botón categorías -->
 			<button id="btnCategories" class="btn-categories">
 				<span class="icon"><span></span></span>
 				<span class="text">Categorías</span>
 			</button>
-		
-			
 		</div>
-            <!-- Buscador -->
-            <div class="search-box">
-                <input type="text" placeholder="Buscar productos...">
-                <button type="submit">
-					<img src="assets/img/search_icon.svg" alt="Buscar">
-				</button>
-            </div>
 
-            <!-- WhatsApp -->
-			<button
-			type="button"
-            class="btn-whatsapp"
-			id="whatsappBtn"
-			aria-label="WhatsApp">
-				<img src="assets/img/whatsapp_icon.webp" alt="WhatsApp">
+        <div class="search-box">
+            <input type="text" placeholder="Buscar productos...">
+            <button type="submit">
+				<img src="assets/img/search_icon.svg" alt="Buscar">
 			</button>
         </div>
-    </div>
 
-    <!-- Barra inferior (vacía por ahora, misma altura)
-    <div class="header-bottom">
-        <div class="header-container">
-            <!-- Aquí luego pondremos menú, promos, etc 
+		<button type="button" class="btn-whatsapp" id="whatsappBtn" aria-label="WhatsApp">
+			<img src="assets/img/whatsapp_icon.webp" alt="WhatsApp">
+		</button>
+
         </div>
-    </div>-->
+    </div>
 </header>
 
 <!-- Overlay -->
@@ -63,29 +47,8 @@
 <aside class="sidebar sidebar-main" id="sidebarMain">
     <button class="sidebar-close" id="closeSidebar">✕</button>
 
-    <ul class="category-list">
-        <li class="category-item">
-            <div class="cat-left">
-                <img src="assets/icons/componentes.png" alt="">
-                <a href="#">Componentes</a>
-            </div>
-            <button class="cat-expand" data-category="componentes">›</button>
-        </li>
-
-        <li class="category-item">
-            <div class="cat-left">
-                <img src="assets/icons/perifericos.png" alt="">
-                <a href="#">Periféricos</a>
-            </div>
-            <button class="cat-expand" data-category="perifericos">›</button>
-        </li>
-
-        <li class="category-item">
-            <div class="cat-left">
-                <img src="assets/icons/ofertas.png" alt="">
-                <a href="#">Ofertas</a>
-            </div>
-        </li>
+    <ul class="category-list" id="categoryList">
+        <!-- Categories will be injected from JSON -->
     </ul>
 </aside>
 
@@ -95,7 +58,25 @@
     <ul class="subcategory-list" id="subcategoryList"></ul>
 </aside>
 
+<!-- TEMPLATES -->
+<template id="category-item-template">
+    <li class="category-item">
+        <div class="cat-left">
+            <img src="" alt="">
+            <a href="#"></a>
+        </div>
+        <button class="cat-expand" data-category=""></button>
+    </li>
+</template>
+
+<template id="subcategory-item-template">
+    <li><a href="#"></a></li>
+</template>
+
+<template id="subcategory-inline-template">
+    <ul class="subcategory-inline"></ul>
+</template>
+
 <script src="js/main.js"></script>
 </body>
 </html>
-

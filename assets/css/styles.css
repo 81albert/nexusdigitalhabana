@@ -405,15 +405,43 @@ body.sidebar-open .sidebar-overlay {
 
 .category-item {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-between; /* left content vs right arrow */
     align-items: center;
     padding: 12px 0;
+    cursor: pointer;
 }
 
 .cat-left {
     display: flex;
     align-items: center;
     gap: 10px;
+    flex: 1; /* take all available space */
+}
+
+.cat-expand {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    flex-shrink: 0; /* don’t shrink */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    color: #000;
+}
+
+.cat-expand::after {
+    content: '>';       /* arrow */
+    transition: transform 0.3s ease;
+}
+
+/* Rotate arrow on mobile when submenu open */
+@media (max-width: 768px) {
+    .category-item.open .cat-expand::after {
+        transform: rotate(90deg);
+    }
 }
 
 .cat-left img {
