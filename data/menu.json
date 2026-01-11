@@ -1,0 +1,32 @@
+{
+    "componentes": {
+      "label": "Componentes",
+      "icon": "assets/icons/componentes.png",
+      "url": "#",
+      "items": [
+        { "label": "Todo en Componentes", "url": "#" },
+        { "label": "Placa base", "url": "#" },
+        { "label": "Almacenamiento", "url": "#" },
+        { "label": "Sistema de enfriamiento", "url": "#" },
+        { "label": "Fuente de alimentación", "url": "#" },
+        { "label": "Chasis", "url": "#" }
+      ]
+    },
+    "perifericos": {
+      "label": "Periféricos",
+      "icon": "assets/icons/perifericos.png",
+      "url": "#",
+      "items": [
+        { "label": "Todo en Periféricos", "url": "#" },
+        { "label": "Monitores", "url": "#" },
+        { "label": "Teclado / Mouse", "url": "#" }
+      ]
+    },
+    "ofertas": {
+      "label": "Ofertas",
+      "icon": "assets/icons/ofertas.png",
+      "url": "/ofertas",
+      "items": []
+    }
+  }
+  

@@ -1,34 +1,26 @@
-document.addEventListener('DOMContentLoaded', function () {
-    const whatsappBtn = document.getElementById('whatsappBtn');
-
-    if (!whatsappBtn) return;
-
-    whatsappBtn.addEventListener('click', function () {
-        const phone = '5350801563';
-        const message = 'Hola, estoy interesado en uno de sus productos';
-
-        const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
-        window.open(url, '_blank', 'noopener');
-    });
-});
-
 document.addEventListener('DOMContentLoaded', () => {
+
+    const whatsappBtn = document.getElementById('whatsappBtn');
+    if (whatsappBtn) {
+        whatsappBtn.addEventListener('click', () => {
+            const phone = '5350801563';
+            const message = 'Hola, estoy interesado en uno de sus productos';
+            const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+            window.open(url, '_blank', 'noopener');
+        });
+    }
 
     const btnCategories = document.getElementById('btnCategories');
     const sidebarOverlay = document.getElementById('sidebarOverlay');
     const closeSidebar = document.getElementById('closeSidebar');
     const backSub = document.getElementById('backSub');
-
-    const expandButtons = document.querySelectorAll('.cat-expand');
     const subcategoryList = document.getElementById('subcategoryList');
 
-    /* ABRIR sidebar principal */
     btnCategories.addEventListener('click', () => {
         document.body.classList.add('sidebar-open');
         document.body.style.overflow = 'hidden';
     });
 
-    /* CERRAR TODO */
     function closeAll() {
         document.body.classList.remove('sidebar-open', 'sub-open');
         document.body.style.overflow = '';
@@ -36,96 +28,101 @@ document.addEventListener('DOMContentLoaded', () => {
 
     sidebarOverlay.addEventListener('click', closeAll);
     closeSidebar.addEventListener('click', closeAll);
+    backSub.addEventListener('click', () => document.body.classList.remove('sub-open'));
 
-    /* VOLVER DESDE SUBCATEGORÍAS */
-    backSub.addEventListener('click', () => {
-        document.body.classList.remove('sub-open');
-    });
+    // Load menu data
+    fetch('data/menu.json')
+        .then(res => res.json())
+        .then(MENU_DATA => renderCategories(MENU_DATA))
+        .catch(err => console.error('Error loading menu.json:', err));
 
-    /* ABRIR SUBCATEGORÍAS */
-    expandButtons.forEach(btn => {
-    btn.addEventListener('click', (e) => {
-        e.stopPropagation();
+    // Render categories dynamically
+    function renderCategories(MENU_DATA) {
+        const categoryList = document.getElementById('categoryList');
+        categoryList.innerHTML = '';
+    
+        Object.entries(MENU_DATA).forEach(([key, catData]) => {
+            const tpl = document.getElementById('category-item-template').content.cloneNode(true);
+            const li = tpl.querySelector('li');
+            const img = li.querySelector('img');
+            const a = li.querySelector('a');
+            const btnExpand = li.querySelector('.cat-expand');
+    
+            img.src = catData.icon || '';
+            img.alt = catData.label;
+            a.textContent = catData.label;
+            a.href = catData.url || '#';
+    
+            // Hide arrow if no submenu items
+            if (!catData.items || catData.items.length === 0) {
+                btnExpand.style.display = 'none';
+            } else {
+                btnExpand.dataset.category = key;
+            }
+    
+            attachCategoryClick(li, MENU_DATA);
+            categoryList.appendChild(li);
+        });
+    }
+    
 
-        const category = btn.dataset.category;
-        const isMobile = window.innerWidth <= 768;
-        const categoryItem = btn.closest('.category-item');
+    function attachCategoryClick(categoryItem, MENU_DATA) {
+        const expandBtn = categoryItem.querySelector('.cat-expand');
 
-        /* ======================
-           MÓVIL: acordeón
-        ====================== */
-        if (isMobile) {
+        categoryItem.addEventListener('click', (e) => {
+            if (!expandBtn) return; // no submenu → normal navigation
+            e.preventDefault();
 
-            // Toggle
-            if (categoryItem.classList.contains('open')) {
-                categoryItem.classList.remove('open');
+            const categoryKey = expandBtn.dataset.category;
+            const categoryData = MENU_DATA[categoryKey];
+            if (!categoryData) return;
+
+            const isMobile = window.innerWidth <= 768;
+
+            /* ===== MOBILE ACCORDION ===== */
+            if (isMobile) {
+                const alreadyOpen = categoryItem.classList.contains('open');
+
+                // Close all other categories
+                document.querySelectorAll('.category-item.open')
+                    .forEach(item => item.classList.remove('open'));
+
+                if (!alreadyOpen) {
+                    // Create submenu if not exist
+                    let subList = categoryItem.querySelector('.subcategory-inline');
+                    if (!subList) {
+                        const listTpl = document.getElementById('subcategory-inline-template').content.cloneNode(true);
+                        subList = listTpl.querySelector('.subcategory-inline');
+
+                        categoryData.items.forEach(sub => {
+                            const subTpl = document.getElementById('subcategory-item-template').content.cloneNode(true);
+                            const link = subTpl.querySelector('a');
+                            link.textContent = sub.label;
+                            link.href = sub.url;
+                            subList.appendChild(subTpl);
+                        });
+
+                        categoryItem.appendChild(subList);
+                    }
+
+                    categoryItem.classList.add('open');
+                }
+
                 return;
             }
 
-            // Cerrar otros
-            document.querySelectorAll('.category-item.open')
-                .forEach(item => item.classList.remove('open'));
+            /* ===== DESKTOP SIDEBAR ===== */
+            subcategoryList.innerHTML = '';
+            categoryData.items.forEach(sub => {
+                const subTpl = document.getElementById('subcategory-item-template').content.cloneNode(true);
+                const link = subTpl.querySelector('a');
+                link.textContent = sub.label;
+                link.href = sub.url;
+                subcategoryList.appendChild(subTpl);
+            });
 
-            let html = '';
-
-            if (category === 'componentes') {
-                html = `
-                    <ul class="subcategory-inline">
-                        <li><a href="#">Todo en Componentes</a></li>
-                        <li><a href="#">Placa base</a></li>
-                        <li><a href="#">Almacenamiento</a></li>
-                        <li><a href="#">Sistema de enfriamiento</a></li>
-                        <li><a href="#">Fuente de alimentación</a></li>
-                        <li><a href="#">Chasis</a></li>
-                    </ul>
-                `;
-            }
-
-            if (category === 'perifericos') {
-                html = `
-                    <ul class="subcategory-inline">
-                        <li><a href="#">Todo en Periféricos</a></li>
-                        <li><a href="#">Monitores</a></li>
-                        <li><a href="#">Teclado / Mouse</a></li>
-                    </ul>
-                `;
-            }
-
-            if (!categoryItem.querySelector('.subcategory-inline')) {
-                categoryItem.insertAdjacentHTML('beforeend', html);
-            }
-
-            categoryItem.classList.add('open');
-            return;
-        }
-
-        /* ======================
-           DESKTOP: sidebar secundario (como ahora)
-        ====================== */
-        subcategoryList.innerHTML = '';
-
-        if (category === 'componentes') {
-            subcategoryList.innerHTML = `
-                <li><a href="#">Todo en Componentes</a></li>
-                <li><a href="#">Placa base</a></li>
-                <li><a href="#">Almacenamiento</a></li>
-                <li><a href="#">Sistema de enfriamiento</a></li>
-                <li><a href="#">Fuente de alimentación</a></li>
-                <li><a href="#">Chasis</a></li>
-            `;
-        }
-
-        if (category === 'perifericos') {
-            subcategoryList.innerHTML = `
-                <li><a href="#">Todo en Periféricos</a></li>
-                <li><a href="#">Monitores</a></li>
-                <li><a href="#">Teclado / Mouse</a></li>
-            `;
-        }
-
-        document.body.classList.add('sub-open');
-    });
-});
-
+            document.body.classList.add('sub-open');
+        });
+    }
 
 });
