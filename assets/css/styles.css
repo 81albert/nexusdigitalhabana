@@ -525,8 +525,9 @@ body.sidebar-open .sidebar-overlay {
         transition: transform 0.3s ease;
     }
 
-    .category-item.open .cat-expand {
+    /*.category-item.open .cat-expand {
         transform: rotate(90deg);
-    }
+    }*/
 }
+
 
