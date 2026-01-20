@@ -15,9 +15,12 @@
         <div class="header-container">
 
             <div class="header-top-row">
-            <div class="logo">
-                <img src="assets/img/logo_wide.webp" alt="Nexus Digital Habana">
-            </div>
+			<div class="logo">
+				<a href="#/" class="logo-link" aria-label="Ir a Inicio">
+					<img src="assets/img/logo_wide.webp" alt="Nexus Digital Habana">
+				</a>
+			</div>
+
 			
 			<button id="btnCategories" class="btn-categories">
 				<span class="icon"><span></span></span>
@@ -58,6 +61,20 @@
     <ul class="subcategory-list" id="subcategoryList"></ul>
 </aside>
 
+<!-- CONTENIDO (vacío por ahora) -->
+<main class="main-content" id="app"></main>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="footer-banner">
+        <img src="assets/img/footer-desktop.png" alt="Nexus Digital Habana">
+    </div>
+
+    <div class="footer-bar">
+        © 2026 Nexus Digital Habana. Todos los derechos reservados.
+    </div>
+</footer>
+
 <!-- TEMPLATES -->
 <template id="category-item-template">
     <li class="category-item">
@@ -65,7 +82,7 @@
             <img src="" alt="">
             <a href="#"></a>
         </div>
-        <button class="cat-expand" data-category=""></button>
+        <button class="cat-expand" data-category="componentes"></button>
     </li>
 </template>
 
@@ -77,6 +94,54 @@
     <ul class="subcategory-inline"></ul>
 </template>
 
+<template id="view-home">
+    <section class="home-view">
+        <div class="home-banner">
+            <h2>Bienvenido a Nexus Digital Habana</h2>
+            <p>Tecnología, conectividad y soluciones digitales</p>
+        </div>
+    </section>
+</template>
+
+<template id="view-products">
+	<nav class="breadcrumb" aria-label="breadcrumb"></nav>
+
+    <div class="products-empty" hidden>
+        No hay productos en esta categoría.
+    </div>
+
+    <div class="products-grid"></div>
+</template>
+
+<template id="view-product-detail">
+    <section class="product-detail-view">
+		<nav class="breadcrumb" aria-label="breadcrumb"></nav>
+        <div class="product-detail" id="productDetail"></div>
+    </section>
+</template>
+
+<template id="product-card-template">
+    <article class="product-card">
+        <div class="product-image">
+            <img src="" alt="">
+        </div>
+
+        <div class="product-info">
+            <h3 class="product-title"></h3>
+            <p class="product-category"></p>
+
+            <div class="product-price">
+                <span class="price"></span>
+            </div>
+
+            <button class="product-btn">
+                Consultar por WhatsApp
+            </button>
+        </div>
+    </article>
+</template>
+
 <script src="js/main.js"></script>
+
 </body>
 </html>
