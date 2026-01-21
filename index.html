@@ -107,7 +107,25 @@
 	<nav class="breadcrumb" aria-label="breadcrumb"></nav>
 
     <div class="products-empty" hidden>
-        No hay productos en esta categoría.
+        <div class="empty-card" role="status" aria-live="polite">
+            <div class="empty-icon" aria-hidden="true">
+                <!-- Icono inline (sin librerías) -->
+                <svg viewBox="0 0 24 24">
+                    <path d="M7 7h10v10H7z"></path>
+                    <path d="M5 6a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6z" fill="none" stroke="currentColor" stroke-width="1.6"></path>
+                    <path d="M9 10h6M9 13h4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
+                </svg>
+            </div>
+
+            <h3 class="empty-title">Sin productos</h3>
+            <p class="empty-text">
+                No hay productos disponibles aquí por ahora. Prueba otra subcategoría.
+            </p>
+
+            <button type="button" class="empty-btn" id="emptyBackBtn">
+                Volver a categorías
+            </button>
+        </div>
     </div>
 
     <div class="products-grid"></div>
@@ -141,7 +159,7 @@
     </article>
 </template>
 
-<script src="js/main.js"></script>
+<script type="module" src="js/main.js"></script>
 
 </body>
 </html>
