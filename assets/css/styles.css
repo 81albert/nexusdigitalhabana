@@ -28,6 +28,16 @@
     --search-min-width: 180px;
 }
 
+/* =========================
+   Frame base reutilizable
+========================= */
+
+.frame-box {
+    border: 1px solid var(--secondary); /* 👈 color del frame */
+    border-radius: 12px;
+    background: #fff;
+}
+
 /* Reset básico */
 * {
     margin: 0;
@@ -701,14 +711,64 @@ body {
 }
 
 /* =========================
-   Estado vacío productos
+   Estado vacío (Productos)
 ========================= */
 
 .products-empty {
-    padding: 40px 24px;
-    text-align: center;
-    color: #666;
-    font-size: 16px;
+  padding: 18px 16px 6px;
+}
+
+.empty-card {
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 18px 16px;
+  border-radius: 14px;
+  background: #fff;
+  border: 1px solid rgba(0,0,0,0.06);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+  text-align: center;
+}
+
+.empty-icon {
+  width: 44px;
+  height: 44px;
+  margin: 2px auto 10px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: rgba(0,0,0,0.04);
+  color: rgba(0,0,0,0.55);
+}
+
+.empty-icon svg {
+  width: 22px;
+  height: 22px;
+  display: block;
+}
+
+.empty-title {
+  margin: 0 0 6px;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.empty-text {
+  margin: 0 0 14px;
+  color: #666;
+  line-height: 1.5;
+}
+
+.empty-btn {
+  border: none;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-weight: 700;
+  cursor: pointer;
+  background: rgba(0,0,0,0.06);
+}
+
+.empty-btn:hover {
+  background: rgba(0,0,0,0.09);
 }
 
 /* =========================
@@ -747,46 +807,199 @@ body {
 }
 
 .product-detail-content {
-    margin-top: 16px;
+    margin: 16px auto 0;
     display: grid;
     gap: 18px;
+    max-width: 1200px;
 }
 
-/* Desktop: 2 columnas */
-@media (min-width: 769px) {
+/* Evita overflow horizontal en CSS Grid cuando el contenido es largo */
+.product-detail-image,
+.product-detail-info {
+    min-width: 0;
+}
+
+/* Tablet / Desktop estrecho: 2 columnas flexibles para que no desborde */
+@media (min-width: 769px) and (max-width: 1350px) {
     .product-detail-content {
-        grid-template-columns: 420px 1fr;
+        grid-template-columns: minmax(360px, 1fr) minmax(320px, 1fr);
+        gap: 24px;
+        max-width: 1200px;
+        margin-left: auto;
+        margin-right: auto;
+
         align-items: start;
+        justify-content: center;
+    }
+
+    .product-detail-info {
+        max-width: none;
     }
 }
 
-.product-detail-image img {
-    width: 100%;
-    max-width: 520px;
-    height: auto;
+/* Desktop ancho: 2 columnas fijas (cuando ya cabe sin overflow) */
+@media (min-width: 1351px) {
+    
+    .product-detail-content {
+        --pd-left: 630px;
+        --pd-right: 650px; /* ancho máximo de la columna derecha */
+        --pd-gap: 32px;
+
+        grid-template-columns: var(--pd-left) var(--pd-right);
+        gap: var(--pd-gap);
+
+        max-width: calc(var(--pd-left) + var(--pd-right) + var(--pd-gap));
+        margin-left: auto;
+        margin-right: auto;
+
+        align-items: start;
+        justify-content: center;
+
+        overflow-x: clip; /* opcional */
+    }
+    .product-tabs {
+        max-width: calc(630px + 650px + 32px);
+    }
+}
+
+.product-main-frame {    overflow: hidden;
+}
+
+.product-main-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 0;  /* el radio ahora lo controla el frame */
+  background: transparent;
+}
+
+/*Detalle de producto: zoom ligero en desktop*/
+@media (min-width: 769px) {
+  .product-main-img {
+    transition: opacity 180ms ease, transform 220ms ease;
+    transform-origin: center;
+  }
+}
+
+@media (min-width: 769px) and (hover: hover) and (pointer: fine) {
+    .product-main-img {
+        transition: opacity 180ms ease, transform 260ms ease;
+        will-change: transform;
+        transform: translateZ(0);
+    }
+
+    .product-main-img:hover {
+        transform: scale(1.03);
+        cursor: zoom-in;
+    }
+}
+
+.product-main-img.is-fading {
+  opacity: 0;
+}
+
+/* =========================
+   Galería detalle: miniaturas
+========================= */
+
+.product-thumbs {
+    margin-top: 12px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.thumb-btn {
+    border: none;
+    background: transparent;
+    padding: 0;
+    cursor: pointer;
+    line-height: 0;
+}
+
+.thumb-frame {
     display: block;
-    border-radius: 10px;
+    padding: 4px; /* espacio para ver el contorno */
+}
+
+.thumb-btn:hover .thumb-frame {
+  border-color: var(--secondary);
+}
+
+.thumb-frame img {
+    width: 76px;
+    height: 76px;
+    display: block;
+    border-radius: 8px;
+    object-fit: contain;
     background: #fff;
+}
+
+/* Miniatura activa */
+.thumb-btn.is-active .thumb-frame {
+    border-color: rgba(0,0,0,0.22);
+}
+
+/* Móvil: scroll horizontal */
+@media (max-width: 768px) {
+    .product-thumbs {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        padding-bottom: 4px;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .thumb-frame img {
+        width: 64px;
+        height: 64px;
+    }
+
+}
+
+.product-detail-info {
+    max-width: 650px;
+    width: 100%;
+}
+
+.product-detail-info.frame-box {
+    padding: 22px 24px;
 }
 
 .product-detail-info .view-title {
     padding: 0;
     margin: 0 0 12px;
+    color: var(--secondary);
 }
 
-/* Texto */
 .product-detail-description {
     margin: 0 0 12px;
     line-height: 1.5;
-    color: #333;
+    color: var(--secondary);
+    overflow-wrap: anywhere;
+    word-break: break-word;
 }
 
 .product-detail-price {
-    margin: 0 0 16px;
-    font-size: 16px;
+  margin: 0 0 16px;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
 }
 
-/* Botón WhatsApp */
+.product-detail-price .price-label {
+  font-size: 14px;
+  color: #666;
+  font-weight: 600;
+}
+
+.product-detail-price .price-amount {
+  font-size: 20px;
+  color: var(--primary);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
 .product-detail-whatsapp {
     width: 100%;
     max-width: 320px;
@@ -797,3 +1010,117 @@ body {
     font-weight: 700;
 }
 
+
+/* =========================
+   Tabs detalle de producto
+========================= */
+
+.product-tabs {
+  margin: 18px auto 0;
+  border-radius: 12px;
+  overflow: hidden; /* para que el borde se vea limpio con radios */
+}
+
+.tabs-header {
+  display: flex;
+  gap: 10px;
+  border-bottom: 1px solid var(--secondary);
+  padding: 10px 14px;
+  overflow-x: auto;
+}
+
+.tabs-body {
+  padding: 14px 16px 18px;
+}
+
+.tab-btn {
+  border: none;
+  background: transparent;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 10px 6px;
+  white-space: nowrap;
+  font-size: 16px;
+  letter-spacing: 0.05em;
+  color: var(--primary);
+}
+
+.tab-btn.is-active {
+  color: var(--secondary);
+  text-decoration: none;
+}
+
+.tab-panel {
+  display: none;
+}
+
+.tab-panel.is-active {
+  display: block;
+}
+
+.muted {
+  color: #666;
+}
+
+/* =========================
+   Especificaciones (texto libre)
+========================= */
+
+.spec-text {
+    color: var(--secondary);
+    line-height: 1.6;
+    margin: 0 0 10px;
+}
+
+/* =========================
+   Vista general: banners
+========================= */
+
+.overview-banner {
+  margin: 20px auto;
+  max-width: 1168px;
+  background: #fff;
+}
+
+.overview-banner + .overview-banner {
+  margin-top: 36px;
+}
+
+.banner-media {
+  width: 100%;
+  aspect-ratio: 1168 / 456;
+  overflow: hidden;
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,0.08);
+}
+
+/* Imagen proporcional al ancho */
+.banner-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Texto del banner */
+.banner-copy {
+  padding: 14px 16px;
+  background: transparent;
+  text-align: center;
+}
+
+.banner-title {
+  margin: 0 0 6px;
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1.25;
+  color: var(--secondary);
+}
+
+.banner-text {
+  margin: 0;
+  color: #333;
+  line-height: 1.6;
+  font-size: 15px;
+  color: var(--primary);
+}
