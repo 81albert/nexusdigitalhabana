@@ -1,20 +1,5 @@
-const PRODUCTS = [
-    {
-        id: 1,
-        name: "Adaptador USB-C a HDMI 4K",
-        slug: "adaptador-usb-c-hdmi-4k",
-        category: "componentes",
-		subcategory: "almacenamiento",
-        description: "Adaptador USB-C a HDMI compatible con resolución 4K.",
-        price: 29.99,
-        stock: 12,
-        images: [
-            "assets/img/product-demo.webp"
-        ],
-        featured: true,
-        createdAt: "2026-01-10"
-    }
-];
+import { PRODUCTS, getProductBySlug } from "./products.js";
+import { renderProductDetailView } from "./productDetailView.js";
 
 const app = document.getElementById('app');
 
@@ -40,6 +25,13 @@ function renderProductsView(products) {
     // ESTADO VACÍO
     if (products.length === 0) {
         if (empty) empty.hidden = false;
+        const backBtn = document.getElementById('emptyBackBtn');
+        if (backBtn) {
+            backBtn.addEventListener('click', () => {
+                document.body.classList.add('sidebar-open');
+                document.body.style.overflow = 'hidden';
+            });
+        }
         return;
     }
 
@@ -68,11 +60,6 @@ function renderProductsView(products) {
 
         grid.appendChild(card);
     });
-}
-
-
-function getProductBySlug(slug) {
-    return PRODUCTS.find(product => product.slug === slug);
 }
 
 function getProductsByCategory(categoryKey) {
@@ -114,20 +101,17 @@ function renderBreadcrumb(categoryKey, subcategoryKey, productName = null) {
 
     // Categoría
     if (categoryKey) {
-        breadcrumb.appendChild(createSeparator());
+    breadcrumb.appendChild(createSeparator());
 
-        const cat = document.createElement('span');
-        cat.textContent = capitalize(categoryKey);
-        cat.addEventListener('click', () => {
-            // Si no hay subcategoría, por ahora volvemos a inicio (puedes cambiar luego a /<cat>/todo)
-            if (subcategoryKey) {
-                window.location.hash = `/${categoryKey}/${subcategoryKey}`;
-            } else {
-                window.location.hash = '/';
-            }
-        });
-        breadcrumb.appendChild(cat);
-    }
+    const cat = document.createElement('span');
+    cat.textContent = capitalize(categoryKey);
+    cat.addEventListener('click', () => {
+        // Volver a la categoría principal (muestra TODO dentro de la categoría)
+        window.location.hash = `/${categoryKey}`;
+    });
+    breadcrumb.appendChild(cat);
+}
+
 
     // Subcategoría
     if (subcategoryKey) {
@@ -169,43 +153,8 @@ function formatSlug(str) {
         .replace(/\b\w/g, l => l.toUpperCase());
 }
 
-function renderProductDetailView(slug) {
-    const product = getProductBySlug(slug);
-    if (!product) return;
-
-    renderView('view-product-detail');
-	renderBreadcrumb(product.category, product.subcategory);
-
-    const container = document.getElementById('productDetail');
-    if (!container) return;
-
-    container.innerHTML = `
-    <div class="product-detail-content">
-        <div class="product-detail-image">
-            <img src="${product.images[0]}" alt="${product.name}">
-        </div>
-
-        <div class="product-detail-info">
-            <h2 class="view-title">${product.name}</h2>
-
-            <p class="product-detail-description">
-                ${product.description}
-            </p>
-
-            <p class="product-detail-price">
-                <strong>Precio:</strong> $${product.price}
-            </p>
-
-            <button class="product-detail-whatsapp">
-                Consultar por WhatsApp
-            </button>
-        </div>
-    </div>
-`;
-}
-
 function routeFromHash() {
-    const hash = window.location.hash.replace('#', '').trim();
+    const hash = (window.location.hash || '').replace('#', '').trim();
 
     if (!hash || hash === '/') {
         renderView('view-home');
@@ -216,24 +165,40 @@ function routeFromHash() {
 
     // Detalle: #/p/<slug>
     if (parts[0] === 'p' && parts[1]) {
-        renderProductDetailView(parts[1]);
+        renderProductDetailView(parts[1], { renderView, renderBreadcrumb });
         return;
     }
 
-    // Productos: #/<category>/<subcategory>
+    // Subcategoría: #/<category>/<subcategory>
     if (parts.length >= 2) {
-        const categoryKey = parts[0];
-        const subcategoryKey = parts[1];
+        const categoryKey = (parts[0] || '').toLowerCase().trim();
+        const subcategoryKey = (parts[1] || '').toLowerCase().trim();
+
+        if (subcategoryKey === 'todo') {
+            window.location.hash = `/${categoryKey}`;
+            return;
+        }
 
         renderProductsView(getProductsBySubcategory(categoryKey, subcategoryKey));
-        updateProductsTitle(categoryKey, subcategoryKey);
         renderBreadcrumb(categoryKey, subcategoryKey);
+        updateProductsTitle(categoryKey, subcategoryKey);
         return;
     }
-	
-	//Fallback
+
+    // Categoría: #/<category>  (mostrar TODO en esa categoría)
+    if (parts.length === 1) {
+        const categoryKey = (parts[0] || '').toLowerCase().trim();
+
+        renderProductsView(getProductsByCategory(categoryKey));
+        renderBreadcrumb(categoryKey, null);
+        updateProductsTitle(categoryKey, null);
+        return;
+    }
+
+    // Fallback
     renderView('view-home');
 }
+
 
 
 
@@ -337,7 +302,10 @@ document.addEventListener('DOMContentLoaded', () => {
                             const subTpl = document.getElementById('subcategory-item-template').content.cloneNode(true);
                             const link = subTpl.querySelector('a');
                             link.textContent = sub.label;
-                            link.href = sub.url;
+                            let u = sub.url || '#';
+                            u = u.replace(/^\/+/, '');          // quita slash inicial
+                            u = u.replace(/\/todo$/, '');       // quita /todo al final si existe
+                            link.href = `#/${u}`;
                             subList.appendChild(subTpl);
                         });
 
@@ -356,7 +324,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 const subTpl = document.getElementById('subcategory-item-template').content.cloneNode(true);
                 const link = subTpl.querySelector('a');
                 link.textContent = sub.label;
-                link.href = sub.url;
+                let u = sub.url || '#';
+                u = u.replace(/^\/+/, '');          // quita slash inicial
+                u = u.replace(/\/todo$/, '');       // quita /todo al final si existe
+                link.href = `#/${u}`;
                 subcategoryList.appendChild(subTpl);
             });
 
@@ -369,23 +340,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
 				e.preventDefault();
 
-				const url = link.getAttribute('href');
-				if (!url) return;
+				let url = link.getAttribute('href');
+                if (!url) return;
 
-				// Ejemplo: /componentes/almacenamiento
-				const parts = url.split('/').filter(Boolean);
-				if (parts.length < 2) return;
+                // Soporta "#/componentes" o "#/componentes/almacenamiento" o "/componentes/..."
+                url = url.replace(/^#/, '').replace(/^\/+/, '');
 
-				const categoryKey = parts[0];
-				const subcategoryKey = parts[1];
+                const parts = url.split('/').filter(Boolean);
+                if (parts.length < 1) return;
 
-				// Cerrar sidebar
-				document.body.classList.remove('sidebar-open');
-				document.body.classList.remove('sub-open');
-				document.body.style.overflow = '';
+                const categoryKey = parts[0];
+                const subcategoryKey = parts[1] || null;
 
-				// Ir a la ruta SPA del listado
-				window.location.hash = `/${categoryKey}/${subcategoryKey}`;
+                // Cerrar sidebar
+                document.body.classList.remove('sidebar-open', 'sub-open');
+                document.body.style.overflow = '';
+
+                // Navegar por hash (deja que routeFromHash() renderice)
+                window.location.hash = subcategoryKey
+                ? `/${categoryKey}/${subcategoryKey}`
+                : `/${categoryKey}`;
 			});
 			
 			document.body.addEventListener('click', (e) => {
@@ -394,22 +368,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
 				e.preventDefault();
 
-				const url = link.getAttribute('href');
-				if (!url) return;
+				let url = link.getAttribute('href');
+                if (!url) return;
 
-				// Ejemplo: /componentes/almacenamiento
-				const parts = url.split('/').filter(Boolean);
-				if (parts.length < 2) return;
+                url = url.replace(/^#/, '').replace(/^\/+/, '');
 
-				const categoryKey = parts[0];
-				const subcategoryKey = parts[1];
+                const parts = url.split('/').filter(Boolean);
+                if (parts.length < 1) return;
 
-				// Cerrar sidebar (móvil)
-				document.body.classList.remove('sidebar-open', 'sub-open');
-				document.body.style.overflow = '';
+                const categoryKey = parts[0];
+                const subcategoryKey = parts[1] || null;
 
-				// Ir a la ruta SPA del listado
-				window.location.hash = `/${categoryKey}/${subcategoryKey}`;
+                // Cerrar sidebar (móvil)
+                document.body.classList.remove('sidebar-open', 'sub-open');
+                document.body.style.overflow = '';
+
+                // Navegar por hash (deja que routeFromHash() renderice)
+                window.location.hash = subcategoryKey
+                ? `/${categoryKey}/${subcategoryKey}`
+                : `/${categoryKey}`;
 			});
 
 routeFromHash();
