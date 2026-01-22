@@ -47,6 +47,8 @@ function renderProductsView(products) {
 
         img.src = product.images[0];
         img.alt = product.name;
+        img.loading = 'lazy';
+        img.decoding = 'async';
         title.textContent = product.name;
         category.textContent = product.category;
         price.textContent = `$${product.price}`;
@@ -198,9 +200,6 @@ function routeFromHash() {
     // Fallback
     renderView('view-home');
 }
-
-
-
 
 document.addEventListener('DOMContentLoaded', () => {
 
