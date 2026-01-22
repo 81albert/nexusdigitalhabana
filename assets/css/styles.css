@@ -35,7 +35,7 @@
 .frame-box {
     border: 1px solid var(--secondary); /* 👈 color del frame */
     border-radius: 12px;
-    background: #fff;
+    background: var(--white);
 }
 
 /* Reset básico */
@@ -114,7 +114,6 @@ body {
         padding-top: 120px;
     }
 }
-
 
 /* Botón Categorías */
 .btn-categories {
@@ -224,6 +223,10 @@ body {
 
 /* Tablet grande */
 @media (min-width: 686px) and (max-width: 864px) {
+    :root {
+        --header-padding-desktop: 0 25px;
+    }
+
     .header-container {
         padding: var(--header-padding-tablet);
     }
@@ -258,6 +261,10 @@ body {
 
 /* Tablet intermedio */
 @media (min-width: 461px) and (max-width: 685px) {
+    :root {
+        --header-padding-desktop: 0 25px;
+    }
+
     .header-container {
         flex-direction: column;
         align-items: flex-start;
@@ -265,7 +272,7 @@ body {
         gap: var(--header-gap-col);
         width: 100%;
     }
-
+    
     .header-top-row {
         display: flex;
         align-items: center;
@@ -303,6 +310,10 @@ body {
 
 /* Mobile */
 @media (max-width: 460px) {
+    :root {
+        --header-padding-desktop: 0 25px;
+    }
+
     .header-container {
         flex-direction: column;
         align-items: flex-start;
@@ -962,10 +973,6 @@ body {
     width: 100%;
 }
 
-.product-detail-info.frame-box {
-    padding: 22px 24px;
-}
-
 .product-detail-info .view-title {
     padding: 0;
     margin: 0 0 12px;
@@ -1009,7 +1016,6 @@ body {
     cursor: pointer;
     font-weight: 700;
 }
-
 
 /* =========================
    Tabs detalle de producto
@@ -1061,6 +1067,12 @@ body {
 .muted {
   color: #666;
 }
+
+/* Zoom Modal */
+.img-zoom-modal[hidden] {
+  display: none !important;
+}
+
 
 /* =========================
    Especificaciones (texto libre)
@@ -1123,4 +1135,206 @@ body {
   line-height: 1.6;
   font-size: 15px;
   color: var(--primary);
+}
+
+/* =========================
+   Product image zoom modal
+========================= */
+
+.img-zoom-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 2000; /* por encima de header (10) y sidebars (1000/1100) */
+  background: var(--gray);
+  display: flex;
+  flex-direction: column;
+}
+
+.img-zoom-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  color: var(--black);
+}
+
+.img-zoom-counter {
+  font-weight: 700;
+  font-size: 14px;
+  user-select: none;
+}
+
+.img-zoom-close {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.22);
+  background: rgba(0,0,0,0.25);
+  color: var(--black);
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.img-zoom-stage {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 16px 6px;
+  min-height: 0;
+  overflow: hidden;   /* clave: recorta dentro del marco */
+  position: relative; /* para posicionar capas */
+}
+
+.img-zoom-viewport {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.img-zoom-layer {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.img-zoom-layer img {
+  max-width: min(1200px, 96vw);
+  max-height: calc(100vh - 170px);
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  background: transparent;
+}
+
+.img-zoom-bottombar {
+  padding: 12px 12px 16px;
+}
+
+.img-zoom-strip {
+  display: flex;
+  align-items: center;
+  justify-content: center; /* centra TODO el grupo */
+  gap: 10px;
+}
+
+/*Flechas de navegación*/
+.img-zoom-nav {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.22);
+  background: rgba(0,0,0,0.25);
+  color: var(--black);
+  font-size: 18px;
+  cursor: pointer;
+}
+
+/* Hover flechas (solo desktop) */
+@media (hover: hover) and (pointer: fine) {
+  .img-zoom-nav {
+    transition:
+      transform 180ms cubic-bezier(.22,.61,.36,1),
+      background-color 180ms ease,
+      border-color 180ms ease;
+  }
+
+  .img-zoom-nav:hover:not(:disabled) {
+    background-color: rgba(0,0,0,0.06);
+    border-color: rgba(0,0,0,0.35);
+    transform: scale(1.06);
+  }
+
+  .img-zoom-nav:active:not(:disabled) {
+    transform: scale(0.98);
+  }
+}
+
+/*Miniaturas*/
+.img-zoom-thumbs {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;              /* móvil: deslizar */
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 6px;
+  scrollbar-width: thin;
+  max-width: min(820px, 78vw);
+}
+
+.img-zoom-thumbbtn {
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  line-height: 0;
+  flex: 0 0 auto;
+}
+
+.img-zoom-thumbframe {
+  display: block;
+  padding: 4px;
+}
+
+.img-zoom-thumbframe img {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  background: transparent;
+  border-radius: 10px;
+  display: block;
+}
+
+.img-zoom-thumbbtn.is-active .img-zoom-thumbframe {
+  border-color: var(--black); /* el frame-box ya tiene borde, aquí lo hacemos destacar */
+}
+
+/* Desktop: cursor y un poquito más de aire */
+@media (min-width: 769px) {
+  .img-zoom-main { cursor: default; }
+}
+
+/* Navegar a la IZQUIERDA (prev):
+   - la actual se mueve un poco a la derecha y sale hacia la izquierda
+   - la nueva entra desde la derecha
+*/
+.img-leave-left  { animation: leaveLeft 520ms cubic-bezier(.22,.61,.36,1) both; }
+.img-enter-right { animation: enterRight 520ms cubic-bezier(.22,.61,.36,1) both; }
+
+/* Navegar a la DERECHA (next):
+   - la actual se mueve un poco a la izquierda y sale hacia la derecha
+   - la nueva entra desde la izquierda
+*/
+.img-leave-right { animation: leaveRight 520ms cubic-bezier(.22,.61,.36,1) both; }
+.img-enter-left  { animation: enterLeft 520ms cubic-bezier(.22,.61,.36,1) both; }
+
+@keyframes leaveLeft {
+  0%   { transform: translateX(0); opacity: 1; }
+  36%  { transform: translateX(18px); opacity: 1; }      /* pre-mov a la derecha */
+  100% { transform: translateX(-115%); opacity: .98; }   /* sale a la izquierda */
+}
+
+@keyframes enterRight {
+  0%   { transform: translateX(115%); opacity: 0; }
+  36%  { transform: translateX(115%); opacity: 0; }    /* HOLD invisible (igual al pre-mov) */
+  37%  { transform: translateX(115%); opacity: .98; }  /* aparece y comienza */
+  100% { transform: translateX(0);    opacity: 1; }
+}
+
+@keyframes leaveRight {
+  0%   { transform: translateX(0); opacity: 1; }
+  36%  { transform: translateX(-18px); opacity: 1; }     /* pre-mov a la izquierda */
+  100% { transform: translateX(115%); opacity: .98; }    /* sale a la derecha */
+}
+
+@keyframes enterLeft {
+  0%   { transform: translateX(-115%); opacity: 0; }
+  36%  { transform: translateX(-115%); opacity: 0; }   /* HOLD invisible */
+  37%  { transform: translateX(-115%); opacity: .98; }
+  100% { transform: translateX(0);     opacity: 1; }
 }
