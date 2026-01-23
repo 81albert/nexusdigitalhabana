@@ -558,48 +558,54 @@ function bindZoomSwipe(targetEl) {
   let dy = 0;
   let active = false;
 
-  const THRESHOLD = 50;
+  const THRESHOLD = 50;     // distancia mínima en px
+  const H_RATIO = 1.2;      // debe ser mayormente horizontal
 
-  targetEl.addEventListener('pointerdown', (e) => {
-    if (e.pointerType && e.pointerType === 'mouse') return;
+  targetEl.addEventListener('touchstart', (e) => {
     if (zoomState.els.modal.hidden) return;
+    if (!e.touches || e.touches.length !== 1) return;
 
     active = true;
-    startX = e.clientX;
-    startY = e.clientY;
+    const t = e.touches[0];
+    startX = t.clientX;
+    startY = t.clientY;
     dx = 0;
     dy = 0;
   }, { passive: true });
 
-  targetEl.addEventListener('pointermove', (e) => {
+  targetEl.addEventListener('touchmove', (e) => {
     if (!active) return;
-    if (e.pointerType && e.pointerType === 'mouse') return;
+    if (!e.touches || e.touches.length !== 1) return;
 
-    dx = e.clientX - startX;
-    dy = e.clientY - startY;
+    const t = e.touches[0];
+    dx = t.clientX - startX;
+    dy = t.clientY - startY;
 
-    if (Math.abs(dx) > Math.abs(dy) * 1.2 && Math.abs(dx) > 10) {
+    // Si es horizontal, bloquea scroll/navegación del navegador
+    if (Math.abs(dx) > Math.abs(dy) * H_RATIO && Math.abs(dx) > 10) {
       e.preventDefault();
     }
   }, { passive: false });
 
-  const end = () => {
+  targetEl.addEventListener('touchend', () => {
     if (!active) return;
     active = false;
 
-    if (Math.abs(dx) > Math.abs(dy) * 1.2 && Math.abs(dx) >= THRESHOLD) {
-      if (dx < 0) stepZoom(1);
-      else stepZoom(-1);
+    if (Math.abs(dx) > Math.abs(dy) * H_RATIO && Math.abs(dx) >= THRESHOLD) {
+      if (dx < 0) stepZoom(1);   // swipe izquierda => siguiente
+      else stepZoom(-1);         // swipe derecha => anterior
     }
 
     dx = 0;
     dy = 0;
-  };
+  }, { passive: true });
 
-  targetEl.addEventListener('pointerup', end, { passive: true });
-  targetEl.addEventListener('pointercancel', end, { passive: true });
+  targetEl.addEventListener('touchcancel', () => {
+    active = false;
+    dx = 0;
+    dy = 0;
+  }, { passive: true });
 }
-
 
 /* =========================
    Performance: preload helpers
