@@ -561,7 +561,7 @@ function bindZoomSwipe(targetEl) {
   const THRESHOLD = 50;
 
   targetEl.addEventListener('pointerdown', (e) => {
-    if (e.pointerType !== 'touch') return;
+    if (e.pointerType && e.pointerType === 'mouse') return;
     if (zoomState.els.modal.hidden) return;
 
     active = true;
@@ -573,7 +573,7 @@ function bindZoomSwipe(targetEl) {
 
   targetEl.addEventListener('pointermove', (e) => {
     if (!active) return;
-    if (e.pointerType !== 'touch') return;
+    if (e.pointerType && e.pointerType === 'mouse') return;
 
     dx = e.clientX - startX;
     dy = e.clientY - startY;
