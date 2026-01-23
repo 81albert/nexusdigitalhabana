@@ -1150,10 +1150,12 @@ body {
   flex-direction: column;
 }
 
-/* Quita el highlight azul solo dentro del zoom */
-.img-zoom-modal,
-.img-zoom-modal * {
-    -webkit-tap-highlight-color: transparent;
+/* Quitar tap highlight SOLO en el zoom (no global) */
+.img-zoom-stage,
+.img-zoom-nav,
+.img-zoom-close,
+.img-zoom-thumbbtn {
+  -webkit-tap-highlight-color: transparent;
 }
 
 .img-zoom-topbar {
