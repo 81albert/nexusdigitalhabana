@@ -313,7 +313,6 @@ function setupImageZoomOverlay(imagesOrFn, productName) {
   });
 }
 
-
 function ensureZoomModalExists() {
   if (zoomState.isReady) return;
 
@@ -358,13 +357,7 @@ function ensureZoomModalExists() {
     thumbs: modal.querySelector('#imgZoomThumbs'),
     prev: modal.querySelector('#imgZoomPrev'),
     next: modal.querySelector('#imgZoomNext'),
-    stage: modal.querySelector('.img-zoom-stage'),
   };
-
-    if (!els.stage) {
-    console.error('Zoom modal: stage no encontrado (.img-zoom-stage).');
-    return;
-    }
 
     if (!els.close || !els.counter || !els.thumbs || !els.prev || !els.next || !els.imgA || !els.imgB || !els.layerA || !els.layerB) {
     console.error('Zoom modal: faltan elementos. Revisa IDs dentro de modal.innerHTML');
@@ -377,8 +370,6 @@ function ensureZoomModalExists() {
   // Navegación click
   els.prev.addEventListener('click', () => stepZoom(-1));
   els.next.addEventListener('click', () => stepZoom(1));
-
-  bindZoomSwipe(els.modal);
 
   // Teclado: SOLO si el modal está abierto
   document.addEventListener('keydown', (e) => {
@@ -547,79 +538,6 @@ function clampIndex(i, total) {
   return Math.max(0, Math.min(total - 1, i));
 }
 
-function bindZoomSwipe(targetEl) {
-  if (!targetEl) return;
-  if (targetEl.dataset.swipeBound === '1') return;
-  targetEl.dataset.swipeBound = '1';
-
-  let startX = 0;
-  let startY = 0;
-  let dx = 0;
-  let dy = 0;
-  let active = false;
-
-  const THRESHOLD = 50; // px
-  const H_RATIO = 1.2;
-
-  function isTouchInStage(e) {
-    const t = e.touches && e.touches[0];
-    if (!t) return false;
-
-    // Detecta por coordenadas si el toque empezó dentro del stage
-    const stage = zoomState.els && zoomState.els.stage;
-    if (!stage) return false;
-
-    const r = stage.getBoundingClientRect();
-    return (t.clientX >= r.left && t.clientX <= r.right && t.clientY >= r.top && t.clientY <= r.bottom);
-  }
-
-  targetEl.addEventListener('touchstart', (e) => {
-    // Modal debe estar abierto
-    if (!zoomState.isReady || !zoomState.els || zoomState.els.modal.hidden) return;
-    if (!e.touches || e.touches.length !== 1) return;
-
-    // Solo si comenzó dentro del stage (no thumbs/topbar)
-    if (!isTouchInStage(e)) return;
-
-    active = true;
-    const t = e.touches[0];
-    startX = t.clientX;
-    startY = t.clientY;
-    dx = 0;
-    dy = 0;
-  }, { passive: true });
-
-  targetEl.addEventListener('touchmove', (e) => {
-    if (!active) return;
-    if (!e.touches || e.touches.length !== 1) return;
-
-    const t = e.touches[0];
-    dx = t.clientX - startX;
-    dy = t.clientY - startY;
-
-    // No necesitas preventDefault para que funcione el swipe; solo medimos.
-  }, { passive: true });
-
-  targetEl.addEventListener('touchend', () => {
-    if (!active) return;
-    active = false;
-
-    if (Math.abs(dx) > Math.abs(dy) * H_RATIO && Math.abs(dx) >= THRESHOLD) {
-      if (dx < 0) stepZoom(-1);   // izquierda => next
-      else stepZoom(1);         // derecha => prev
-    }
-
-    dx = 0;
-    dy = 0;
-  }, { passive: true });
-
-  targetEl.addEventListener('touchcancel', () => {
-    active = false;
-    dx = 0;
-    dy = 0;
-  }, { passive: true });
-}
-
 /* =========================
    Performance: preload helpers
 ========================= */
@@ -743,5 +661,4 @@ function refreshDetailGallery(images, productName, mainImg, thumbsWrap) {
 
   // reengancha handlers de miniaturas a este nuevo set
   setupProductGallery(images);
-
 }
