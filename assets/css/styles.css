@@ -1150,14 +1150,6 @@ body {
   flex-direction: column;
 }
 
-/* Quitar tap highlight SOLO en el zoom (no global) */
-.img-zoom-stage,
-.img-zoom-nav,
-.img-zoom-close,
-.img-zoom-thumbbtn {
-  -webkit-tap-highlight-color: transparent;
-}
-
 .img-zoom-topbar {
   display: flex;
   align-items: center;
@@ -1192,7 +1184,6 @@ body {
   min-height: 0;
   overflow: hidden;   /* clave: recorta dentro del marco */
   position: relative; /* para posicionar capas */
-  .img-zoom-stage { touch-action: none; }
 }
 
 .img-zoom-viewport {
@@ -1389,8 +1380,4 @@ body {
   background-color: rgba(0,0,0,0.04);
 }
 
-/* Quitar tap highlight en elementos interactivos (Android/Chrome) */
-a, button, input, textarea, select, label, summary,
-[role="button"], [tabindex] {
-  -webkit-tap-highlight-color: transparent;
-}
+
