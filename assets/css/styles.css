@@ -1184,6 +1184,7 @@ body {
   min-height: 0;
   overflow: hidden;   /* clave: recorta dentro del marco */
   position: relative; /* para posicionar capas */
+  .img-zoom-stage { touch-action: none; }
 }
 
 .img-zoom-viewport {
@@ -1338,3 +1339,46 @@ body {
   37%  { transform: translateX(-115%); opacity: .98; }
   100% { transform: translateX(0);     opacity: 1; }
 }
+
+/* =========================
+   Variaciones de producto
+========================= */
+.product-variations {
+  margin-top: 12px;
+}
+
+.variations-label {
+  margin: 0 0 8px;
+  color: var(--secondary);
+  font-size: 14px;
+}
+
+.variation-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.variation-btn {
+  padding: 10px 14px;
+  background: transparent;
+  color: var(--secondary);
+  border-color: rgba(0,0,0,0.25);
+  cursor: pointer;
+  transition:
+    color 160ms ease,
+    border-color 160ms ease,
+    background-color 160ms ease;
+}
+
+.variation-btn:hover {
+  border-color: rgba(0,0,0,0.45);
+}
+
+.variation-btn.is-active {
+  color: var(--primary);
+  border-color: var(--primary);
+  background-color: rgba(0,0,0,0.04);
+}
+
+
