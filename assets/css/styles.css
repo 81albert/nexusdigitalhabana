@@ -1389,4 +1389,8 @@ body {
   background-color: rgba(0,0,0,0.04);
 }
 
-
+/* Quitar tap highlight en elementos interactivos (Android/Chrome) */
+a, button, input, textarea, select, label, summary,
+[role="button"], [tabindex] {
+  -webkit-tap-highlight-color: transparent;
+}
