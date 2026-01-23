@@ -1150,6 +1150,12 @@ body {
   flex-direction: column;
 }
 
+/* Quita el highlight azul solo dentro del zoom */
+.img-zoom-modal,
+.img-zoom-modal * {
+    -webkit-tap-highlight-color: transparent;
+}
+
 .img-zoom-topbar {
   display: flex;
   align-items: center;
