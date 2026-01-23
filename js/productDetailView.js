@@ -17,8 +17,31 @@ export function renderProductDetailView(slug, deps) {
   const container = document.getElementById('productDetail');
       if (!container) return;
   
-      const images = Array.isArray(product.images) ? product.images : [];
-      const mainImage = images[0] || '';
+        // =========================
+        // Product variation state
+        // =========================
+        let activeVariation = null;
+
+        let images = [];
+        let price = product.price;
+
+        // Producto VARIABLE
+        if (product.type === "variable" && Array.isArray(product.variations) && product.variations.length) {
+        activeVariation =
+            product.variations.find(v => v.id === product.defaultVariationId) ||
+            product.variations[0];
+
+        if (activeVariation) {
+            images = Array.isArray(activeVariation.images) ? activeVariation.images : [];
+            price = (activeVariation.price ?? product.price);
+        }
+        } else {
+        // Producto SIMPLE
+        images = Array.isArray(product.images) ? product.images : [];
+        }
+
+        const mainImage = images[0] || '';
+
   
       const thumbsHtml = (images.length > 1)
           ? `
@@ -36,7 +59,25 @@ export function renderProductDetailView(slug, deps) {
         </div>
       `
           : '';
-  
+    const variationsHtml = (
+        product.type === "variable" &&
+        Array.isArray(product.variations) &&
+        product.variations.length > 0
+        ) ? `
+        <div class="product-variations" aria-label="Variaciones del producto">
+            <p class="variations-label">Variación:</p>
+            <div class="variation-options" id="variationOptions">
+            ${product.variations.map(v => `
+                <button type="button"
+                        class="variation-btn frame-box ${activeVariation && v.id === activeVariation.id ? 'is-active' : ''}"
+                        data-variation-id="${v.id}">
+                ${v.label}
+                </button>
+            `).join('')}
+            </div>
+        </div>
+        ` : '';
+
       container.innerHTML = `
     <div class="product-detail-content">
       <div class="product-detail-image">
@@ -61,8 +102,10 @@ export function renderProductDetailView(slug, deps) {
   
         <p class="product-detail-price">
           <span class="price-label">Precio:</span>
-          <span class="price-amount">$${product.price}</span>
+          <span class="price-amount">$${price}</span>
         </p>
+
+        ${variationsHtml}
   
         <button class="product-detail-whatsapp product-btn" type="button">
           Consultar por WhatsApp
@@ -88,7 +131,8 @@ export function renderProductDetailView(slug, deps) {
       // Galería: miniaturas -> cambia imagen principal
       setupProductGallery(images);
       warmProductImages(images);
-      setupImageZoomOverlay(images, product.name);
+      setupImageZoomOverlay(() => images, product.name);
+      setupVariationSelector(product, () => activeVariation, (v) => { activeVariation = v; }, () => images, (imgs) => { images = imgs; });
   
       // Pintar contenido de tabs
       renderOverviewBlocks(product);
@@ -249,20 +293,26 @@ let zoomState = {
 
 zoomState.activeLayer = 'A';
 
-function setupImageZoomOverlay(images, productName) {
+function setupImageZoomOverlay(imagesOrFn, productName) {
   const mainImg = document.querySelector('.product-main-img');
   if (!mainImg) return;
-  if (!Array.isArray(images) || images.length === 0) return;
+
+  // Evita duplicar listeners si se refresca la galería (variaciones)
+  if (mainImg.dataset.zoomBound === '1') return;
+  mainImg.dataset.zoomBound = '1';
 
   ensureZoomModalExists();
 
-  // Click en imagen principal => abre zoom en el índice actual (según miniatura activa si existe)
   mainImg.addEventListener('click', () => {
+    const imgs = (typeof imagesOrFn === 'function') ? imagesOrFn() : imagesOrFn;
+    if (!Array.isArray(imgs) || imgs.length === 0) return;
+
     const activeThumb = document.querySelector('.thumb-btn.is-active');
     const idx = activeThumb ? Number(activeThumb.dataset.index) : 0;
-    openZoom(idx, images, productName);
+    openZoom(idx, imgs, productName);
   });
 }
+
 
 function ensureZoomModalExists() {
   if (zoomState.isReady) return;
@@ -308,7 +358,13 @@ function ensureZoomModalExists() {
     thumbs: modal.querySelector('#imgZoomThumbs'),
     prev: modal.querySelector('#imgZoomPrev'),
     next: modal.querySelector('#imgZoomNext'),
+    stage: modal.querySelector('.img-zoom-stage'),
   };
+
+    if (!els.stage) {
+    console.error('Zoom modal: stage no encontrado (.img-zoom-stage).');
+    return;
+    }
 
     if (!els.close || !els.counter || !els.thumbs || !els.prev || !els.next || !els.imgA || !els.imgB || !els.layerA || !els.layerB) {
     console.error('Zoom modal: faltan elementos. Revisa IDs dentro de modal.innerHTML');
@@ -321,6 +377,8 @@ function ensureZoomModalExists() {
   // Navegación click
   els.prev.addEventListener('click', () => stepZoom(-1));
   els.next.addEventListener('click', () => stepZoom(1));
+
+  bindZoomSwipe(els.stage);
 
   // Teclado: SOLO si el modal está abierto
   document.addEventListener('keydown', (e) => {
@@ -489,6 +547,60 @@ function clampIndex(i, total) {
   return Math.max(0, Math.min(total - 1, i));
 }
 
+function bindZoomSwipe(targetEl) {
+  if (!targetEl) return;
+  if (targetEl.dataset.swipeBound === '1') return;
+  targetEl.dataset.swipeBound = '1';
+
+  let startX = 0;
+  let startY = 0;
+  let dx = 0;
+  let dy = 0;
+  let active = false;
+
+  const THRESHOLD = 50;
+
+  targetEl.addEventListener('pointerdown', (e) => {
+    if (e.pointerType !== 'touch') return;
+    if (zoomState.els.modal.hidden) return;
+
+    active = true;
+    startX = e.clientX;
+    startY = e.clientY;
+    dx = 0;
+    dy = 0;
+  }, { passive: true });
+
+  targetEl.addEventListener('pointermove', (e) => {
+    if (!active) return;
+    if (e.pointerType !== 'touch') return;
+
+    dx = e.clientX - startX;
+    dy = e.clientY - startY;
+
+    if (Math.abs(dx) > Math.abs(dy) * 1.2 && Math.abs(dx) > 10) {
+      e.preventDefault();
+    }
+  }, { passive: false });
+
+  const end = () => {
+    if (!active) return;
+    active = false;
+
+    if (Math.abs(dx) > Math.abs(dy) * 1.2 && Math.abs(dx) >= THRESHOLD) {
+      if (dx < 0) stepZoom(1);
+      else stepZoom(-1);
+    }
+
+    dx = 0;
+    dy = 0;
+  };
+
+  targetEl.addEventListener('pointerup', end, { passive: true });
+  targetEl.addEventListener('pointercancel', end, { passive: true });
+}
+
+
 /* =========================
    Performance: preload helpers
 ========================= */
@@ -534,4 +646,82 @@ function prefetchAdjacent(images, idx) {
 
   preloadImage(next);
   preloadImage(prev);
+}
+
+function setupVariationSelector(product, getActiveVar, setActiveVar, getImages, setImages) {
+  const wrap = document.getElementById('variationOptions');
+  if (!wrap) return;
+
+  const priceEl = document.querySelector('.price-amount');
+  const thumbsWrap = document.querySelector('.product-thumbs');
+  const mainImg = document.querySelector('.product-main-img');
+
+  wrap.addEventListener('click', (e) => {
+    const btn = e.target.closest('.variation-btn');
+    if (!btn) return;
+
+    const id = btn.dataset.variationId;
+    const nextVar = product.variations.find(v => v.id === id);
+    if (!nextVar) return;
+
+    const currentVar = getActiveVar();
+    if (currentVar && currentVar.id === nextVar.id) return;
+
+    // 1) estado
+    setActiveVar(nextVar);
+
+    // 2) imágenes efectivas
+    const nextImages = Array.isArray(nextVar.images) ? nextVar.images : [];
+    setImages(nextImages);
+
+    // 3) precio
+    if (priceEl) {
+      const nextPrice = (nextVar.price ?? product.price);
+      priceEl.textContent = `$${nextPrice}`;
+    }
+
+    // 4) UI active
+    wrap.querySelectorAll('.variation-btn').forEach(b => {
+      b.classList.toggle('is-active', b.dataset.variationId === id);
+    });
+
+    // 5) refrescar galería (main + thumbs)
+    refreshDetailGallery(nextImages, product.name, mainImg, thumbsWrap);
+
+    // 6) performance
+    warmProductImages(nextImages);
+  });
+}
+
+function refreshDetailGallery(images, productName, mainImg, thumbsWrap) {
+  if (!mainImg) return;
+
+  const main = images[0] || '';
+  mainImg.classList.remove('is-fading');
+  mainImg.src = main;
+  mainImg.alt = productName;
+
+  // thumbs
+  if (!thumbsWrap) return;
+
+  if (!Array.isArray(images) || images.length <= 1) {
+    thumbsWrap.innerHTML = '';
+    thumbsWrap.style.display = 'none';
+    return;
+  }
+
+  thumbsWrap.style.display = '';
+  thumbsWrap.innerHTML = images.map((src, i) => `
+    <button type="button"
+            class="thumb-btn ${i === 0 ? 'is-active' : ''}"
+            data-index="${i}"
+            aria-label="Ver imagen ${i + 1}">
+      <span class="thumb-frame frame-box">
+        <img src="${src}" alt="${productName} miniatura ${i + 1}" loading="lazy" decoding="async">
+      </span>
+    </button>
+  `).join('');
+
+  // reengancha handlers de miniaturas a este nuevo set
+  setupProductGallery(images);
 }
