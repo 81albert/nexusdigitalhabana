@@ -28,6 +28,11 @@
     --search-min-width: 180px;
 }
 
+/* Remove mobile tap highlight (blue flash) */
+* {
+    -webkit-tap-highlight-color: transparent;
+}
+
 /* =========================
    Frame base reutilizable
 ========================= */
