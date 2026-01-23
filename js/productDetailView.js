@@ -605,8 +605,8 @@ function bindZoomSwipe(targetEl) {
     active = false;
 
     if (Math.abs(dx) > Math.abs(dy) * H_RATIO && Math.abs(dx) >= THRESHOLD) {
-      if (dx < 0) stepZoom(1);   // izquierda => next
-      else stepZoom(-1);         // derecha => prev
+      if (dx < 0) stepZoom(-1);   // izquierda => next
+      else stepZoom(1);         // derecha => prev
     }
 
     dx = 0;
@@ -743,4 +743,5 @@ function refreshDetailGallery(images, productName, mainImg, thumbsWrap) {
 
   // reengancha handlers de miniaturas a este nuevo set
   setupProductGallery(images);
+
 }
