@@ -378,7 +378,7 @@ function ensureZoomModalExists() {
   els.prev.addEventListener('click', () => stepZoom(-1));
   els.next.addEventListener('click', () => stepZoom(1));
 
-  bindZoomSwipe(els.stage);
+  bindZoomSwipe(els.modal);
 
   // Teclado: SOLO si el modal está abierto
   document.addEventListener('keydown', (e) => {
@@ -558,12 +558,28 @@ function bindZoomSwipe(targetEl) {
   let dy = 0;
   let active = false;
 
-  const THRESHOLD = 50;     // distancia mínima en px
-  const H_RATIO = 1.2;      // debe ser mayormente horizontal
+  const THRESHOLD = 50; // px
+  const H_RATIO = 1.2;
+
+  function isTouchInStage(e) {
+    const t = e.touches && e.touches[0];
+    if (!t) return false;
+
+    // Detecta por coordenadas si el toque empezó dentro del stage
+    const stage = zoomState.els && zoomState.els.stage;
+    if (!stage) return false;
+
+    const r = stage.getBoundingClientRect();
+    return (t.clientX >= r.left && t.clientX <= r.right && t.clientY >= r.top && t.clientY <= r.bottom);
+  }
 
   targetEl.addEventListener('touchstart', (e) => {
-    if (zoomState.els.modal.hidden) return;
+    // Modal debe estar abierto
+    if (!zoomState.isReady || !zoomState.els || zoomState.els.modal.hidden) return;
     if (!e.touches || e.touches.length !== 1) return;
+
+    // Solo si comenzó dentro del stage (no thumbs/topbar)
+    if (!isTouchInStage(e)) return;
 
     active = true;
     const t = e.touches[0];
@@ -581,19 +597,16 @@ function bindZoomSwipe(targetEl) {
     dx = t.clientX - startX;
     dy = t.clientY - startY;
 
-    // Si es horizontal, bloquea scroll/navegación del navegador
-    if (Math.abs(dx) > Math.abs(dy) * H_RATIO && Math.abs(dx) > 10) {
-      e.preventDefault();
-    }
-  }, { passive: false });
+    // No necesitas preventDefault para que funcione el swipe; solo medimos.
+  }, { passive: true });
 
   targetEl.addEventListener('touchend', () => {
     if (!active) return;
     active = false;
 
     if (Math.abs(dx) > Math.abs(dy) * H_RATIO && Math.abs(dx) >= THRESHOLD) {
-      if (dx < 0) stepZoom(1);   // swipe izquierda => siguiente
-      else stepZoom(-1);         // swipe derecha => anterior
+      if (dx < 0) stepZoom(1);   // izquierda => next
+      else stepZoom(-1);         // derecha => prev
     }
 
     dx = 0;
