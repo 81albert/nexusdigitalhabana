@@ -140,16 +140,26 @@ export function renderProductDetailView(slug, deps) {
       renderReviewsPlaceholder(product);
       setupTabs();
   
-      // WhatsApp contextual (si ya lo tenías, mantenlo)
-      const detailWhatsappBtn = document.querySelector('.product-detail-whatsapp');
-      if (detailWhatsappBtn) {
-          detailWhatsappBtn.addEventListener('click', () => {
-              const phone = '5350801563';
-              const message = `Hola, estoy interesado en: ${product.name} (de $${product.price})`;
-              const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
-              window.open(url, '_blank', 'noopener');
-          });
-      }
+      // WhatsApp contextual
+    const detailWhatsappBtn = document.querySelector('.product-detail-whatsapp');
+    if (detailWhatsappBtn) {
+        detailWhatsappBtn.addEventListener('click', () => {
+            const phone = '5350801563';
+
+
+            // Toma la variación actual si existe
+            const v = (product.type === 'variable' && activeVariation) ? activeVariation : null;
+
+
+            const label = v?.label ? ` — Variación: ${v.label}` : '';
+            const p = (v?.price ?? price); // "price" ya lo calculas arriba para la vista
+            const message = `Hola, estoy interesado en: ${product.name}${label} (Precio: $${p})`;
+
+
+            const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+            window.open(url, '_blank', 'noopener');
+        });
+    }
   }
   
   /**
@@ -282,7 +292,6 @@ function renderReviewsPlaceholder(product) {
 /* =========================
    Zoom overlay (click en imagen)
 ========================= */
-
 let zoomState = {
   isReady: false,
   images: [],
@@ -312,6 +321,7 @@ function setupImageZoomOverlay(imagesOrFn, productName) {
     openZoom(idx, imgs, productName);
   });
 }
+
 
 function ensureZoomModalExists() {
   if (zoomState.isReady) return;
@@ -357,7 +367,13 @@ function ensureZoomModalExists() {
     thumbs: modal.querySelector('#imgZoomThumbs'),
     prev: modal.querySelector('#imgZoomPrev'),
     next: modal.querySelector('#imgZoomNext'),
+    stage: modal.querySelector('.img-zoom-stage'),
   };
+
+    if (!els.stage) {
+    console.error('Zoom modal: stage no encontrado (.img-zoom-stage).');
+    return;
+    }
 
     if (!els.close || !els.counter || !els.thumbs || !els.prev || !els.next || !els.imgA || !els.imgB || !els.layerA || !els.layerB) {
     console.error('Zoom modal: faltan elementos. Revisa IDs dentro de modal.innerHTML');
@@ -370,6 +386,8 @@ function ensureZoomModalExists() {
   // Navegación click
   els.prev.addEventListener('click', () => stepZoom(-1));
   els.next.addEventListener('click', () => stepZoom(1));
+
+  bindZoomSwipe(els.stage);
 
   // Teclado: SOLO si el modal está abierto
   document.addEventListener('keydown', (e) => {
@@ -536,6 +554,79 @@ enteringLayer.addEventListener('animationend', onDone);
 function clampIndex(i, total) {
   if (!Number.isFinite(i) || total <= 0) return 0;
   return Math.max(0, Math.min(total - 1, i));
+}
+
+function bindZoomSwipe(targetEl) {
+  if (!targetEl) return;
+  if (targetEl.dataset.swipeBound === '1') return;
+  targetEl.dataset.swipeBound = '1';
+
+  let startX = 0;
+  let startY = 0;
+  let dx = 0;
+  let dy = 0;
+  let active = false;
+
+  const THRESHOLD = 50; // px
+  const H_RATIO = 1.2;
+
+  function isTouchInStage(e) {
+    const t = e.touches && e.touches[0];
+    if (!t) return false;
+
+    // Detecta por coordenadas si el toque empezó dentro del stage
+    const stage = zoomState.els && zoomState.els.stage;
+    if (!stage) return false;
+
+    const r = stage.getBoundingClientRect();
+    return (t.clientX >= r.left && t.clientX <= r.right && t.clientY >= r.top && t.clientY <= r.bottom);
+  }
+
+  targetEl.addEventListener('touchstart', (e) => {
+    // Modal debe estar abierto
+    if (!zoomState.isReady || !zoomState.els || zoomState.els.modal.hidden) return;
+    if (!e.touches || e.touches.length !== 1) return;
+
+    // Solo si comenzó dentro del stage (no thumbs/topbar)
+    if (!isTouchInStage(e)) return;
+
+    active = true;
+    const t = e.touches[0];
+    startX = t.clientX;
+    startY = t.clientY;
+    dx = 0;
+    dy = 0;
+  }, { passive: true });
+
+  targetEl.addEventListener('touchmove', (e) => {
+    if (!active) return;
+    if (!e.touches || e.touches.length !== 1) return;
+
+    const t = e.touches[0];
+    dx = t.clientX - startX;
+    dy = t.clientY - startY;
+
+    // No necesitas preventDefault para que funcione el swipe; solo medimos.
+  }, { passive: true });
+
+  targetEl.addEventListener('touchend', () => {
+    if (!active) return;
+    active = false;
+
+    if (Math.abs(dx) > Math.abs(dy) * H_RATIO && Math.abs(dx) >= THRESHOLD) {
+      if (dx < 0) stepZoom(-1);   // izquierda => next
+      else stepZoom(1);         // derecha => prev
+    }
+
+    dx = 0;
+    dy = 0;
+  }, { passive: true });
+
+  targetEl.addEventListener('touchcancel', () => {
+    active = false;
+    dx = 0;
+    dy = 0;
+  }, { passive: true });
 }
 
 /* =========================
