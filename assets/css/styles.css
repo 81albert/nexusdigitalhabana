@@ -615,14 +615,16 @@ body {
 
 /* Banner PNG */
 .footer-banner {
-    width: 100%;
+    width: auto; /* ya no fuerza el ancho al 100% */
     line-height: 0;
+    overflow-x: visible; /* permite overflow horizontal */
 }
 
 .footer-banner img {
-    width: 100%;
-    height: auto;
+    width: auto; /* mantiene el ancho original de la imagen */
+    height: auto; /* mantiene la altura original proporcional */
     display: block;
+    max-width: none; /* asegura que no se limite el ancho */
 }
 
 /* Barra inferior tipo header */
