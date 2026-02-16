@@ -33,12 +33,12 @@
 ========================= */
 
 .frame-box {
-    border: 1px solid var(--secondary); /* ðŸ‘ˆ color del frame */
+    border: 1px solid var(--secondary); /* ?? color del frame */
     border-radius: 12px;
     background: var(--white);
 }
 
-/* Reset bÃ¡sico */
+/* Reset básico */
 * {
     margin: 0;
     padding: 0;
@@ -46,12 +46,12 @@
     font-family: Arial, Helvetica, sans-serif;
 }
 
-/* Quitar highlight azul en tap (mÃ³vil WebKit/Chrome) */
+/* Quitar highlight azul en tap (móvil WebKit/Chrome) */
 *:focus {
     outline: none;
 }
 
-/* VersiÃ³n especÃ­fica para el efecto de toque */
+/* Versión específica para el efecto de toque */
 button,
 a,
 .product-card,
@@ -95,7 +95,7 @@ body {
     height: 100%;
     display: flex;
     align-items: center;
-    justify-content: space-between; /* logo primero, botÃ³n a la derecha */
+    justify-content: space-between; /* logo primero, botón a la derecha */
     gap: var(--header-gap);
     flex-wrap: nowrap;
 }
@@ -125,14 +125,14 @@ body {
     padding-top: var(--header-min-height);
 }
 
-/* En tablet/mÃ³vil el header es mÃ¡s alto (2 filas), subimos el padding */
+/* En tablet/móvil el header es más alto (2 filas), subimos el padding */
 @media (max-width: 685px) {
     .main-content {
         padding-top: 120px;
     }
 }
 
-/* BotÃ³n CategorÃ­as */
+/* Botón Categorías */
 .btn-categories {
     display: flex;
     align-items: center;
@@ -215,7 +215,7 @@ body {
     background: var(--primary);
 }
 
-/* BotÃ³n WhatsApp */
+/* Botón WhatsApp */
 .btn-whatsapp {
     background: none;
     border: none;
@@ -419,7 +419,7 @@ body.sidebar-open .sidebar-overlay {
 /* Sidebar secundario */
 .sidebar-sub {
     left: 320px;              /* se coloca a la derecha del principal */
-    transform: translateX(0); /* posiciÃ³n natural */
+    transform: translateX(0); /* posición natural */
     opacity: 0;
     pointer-events: none;
     transition: opacity .3s ease;
@@ -455,7 +455,7 @@ body.sidebar-open .sidebar-overlay {
     font-size: 18px;
 }
 
-/* CategorÃ­as */
+/* Categorías */
 .category-list,
 .subcategory-list {
     list-style: none;
@@ -483,7 +483,7 @@ body.sidebar-open .sidebar-overlay {
     border: none;
     font-size: 18px;
     cursor: pointer;
-    flex-shrink: 0; /* donâ€™t shrink */
+    flex-shrink: 0; /* don?t shrink */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -509,7 +509,7 @@ body.sidebar-open .sidebar-overlay {
     height: 22px;
 }
 
-/*CategorÃ­as*/
+/*Categorías*/
 .cat-left a {
     text-decoration: none;
     color: #000;
@@ -524,9 +524,9 @@ body.sidebar-open .sidebar-overlay {
     cursor: pointer;
 }
 
-/* SubcategorÃ­as */
+/* Subcategorías */
 .subcategory-list li {
-    padding: 12px 0;          /* espacio vertical entre lÃ­neas de las SubcategorÃ­as*/
+    padding: 12px 0;          /* espacio vertical entre líneas de las Subcategorías*/
 }
 
 .subcategory-list a {
@@ -537,7 +537,7 @@ body.sidebar-open .sidebar-overlay {
 }
 
 /* =========================
-   MÃ“VIL: subcategorÃ­as en acordeÃ³n
+   MÓVIL: subcategorías en acordeón
 ========================= */
 @media (max-width: 768px) {
 
@@ -557,7 +557,7 @@ body.sidebar-open .sidebar-overlay {
     }
 
     .category-item.open .subcategory-inline {
-        max-height: 500px; /* suficiente para tus subcategorÃ­as */
+        max-height: 500px; /* suficiente para tus subcategorías */
         opacity: 1;
     }
 
@@ -615,16 +615,18 @@ body {
 
 /* Banner PNG */
 .footer-banner {
-    width: auto; /* ya no fuerza el ancho al 100% */
+    width: 100%;
     line-height: 0;
-    overflow-x: visible; /* permite overflow horizontal */
+	overflow: hidden; /* recorta la imagen si es más grande que el contenedor */
 }
 
 .footer-banner img {
-    width: auto; /* mantiene el ancho original de la imagen */
-    height: auto; /* mantiene la altura original proporcional */
     display: block;
-    max-width: none; /* asegura que no se limite el ancho */
+	width: auto; /* mantiene el ancho original de la imagen */
+    height: auto; /* mantiene la altura original proporcional */
+	max-width: none; /* asegura que no se limite el ancho */
+	transform: scale(0.6);   /* 70% */
+    transform-origin: bottom left; /* queda pegada abajo a la barra */
 }
 
 /* Barra inferior tipo header */
@@ -637,7 +639,7 @@ body {
 }
 
 /* =========================
-   Productos â€“ Grid
+   Productos Grid
 ========================= */
 
 .products-view {
@@ -722,7 +724,7 @@ body {
     color: var(--secondary);
 }
 
-/* BotÃ³n */
+/* Botón */
 
 .product-btn {
     margin-top: 10px;
@@ -741,7 +743,7 @@ body {
 }
 
 /* =========================
-   Estado vacÃ­o (Productos)
+   Estado vacío (Productos)
 ========================= */
 
 .products-empty {
@@ -872,7 +874,7 @@ body {
     
     .product-detail-content {
         --pd-left: 630px;
-        --pd-right: 650px; /* ancho mÃ¡ximo de la columna derecha */
+        --pd-right: 650px; /* ancho máximo de la columna derecha */
         --pd-gap: 32px;
 
         grid-template-columns: var(--pd-left) var(--pd-right);
@@ -929,7 +931,7 @@ body {
 }
 
 /* =========================
-   GalerÃ­a detalle: miniaturas
+   Galería detalle: miniaturas
 ========================= */
 
 .product-thumbs {
@@ -971,7 +973,7 @@ body {
     border-color: rgba(0,0,0,0.22);
 }
 
-/* MÃ³vil: scroll horizontal */
+/* Móvil: scroll horizontal */
 @media (max-width: 768px) {
     .product-thumbs {
         flex-wrap: nowrap;
@@ -1070,7 +1072,7 @@ body {
   color: var(--primary);
 }
 
-/* Tabs en mÃ³vil muy pequeÃ±o: 2 arriba, 1 abajo */
+/* Tabs en móvil muy pequeño: 2 arriba, 1 abajo */
 @media (max-width: 460px) {
   .tabs-header {
     flex-wrap: wrap;
@@ -1079,7 +1081,7 @@ body {
   }
 
   .tab-btn {
-    white-space: normal;       /* permite que el texto ocupe varias lÃ­neas */
+    white-space: normal;       /* permite que el texto ocupe varias líneas */
     flex: 1 1 50%;             /* dos botones por fila */
     text-align: center;
   }
@@ -1262,7 +1264,7 @@ body {
   gap: 10px;
 }
 
-/*Flechas de navegaciÃ³n*/
+/*Flechas de navegación*/
 .img-zoom-nav {
   width: 44px;
   height: 44px;
@@ -1298,7 +1300,7 @@ body {
 .img-zoom-thumbs {
   display: flex;
   gap: 10px;
-  overflow-x: auto;              /* mÃ³vil: deslizar */
+  overflow-x: auto;              /* móvil: deslizar */
   -webkit-overflow-scrolling: touch;
   padding-bottom: 6px;
   scrollbar-width: thin;
@@ -1329,10 +1331,10 @@ body {
 }
 
 .img-zoom-thumbbtn.is-active .img-zoom-thumbframe {
-  border-color: var(--black); /* el frame-box ya tiene borde, aquÃ­ lo hacemos destacar */
+  border-color: var(--black); /* el frame-box ya tiene borde, aqu?lo hacemos destacar */
 }
 
-/* Desktop: cursor y un poquito mÃ¡s de aire */
+/* Desktop: cursor y un poquito más de aire */
 @media (min-width: 769px) {
   .img-zoom-main { cursor: default; }
 }
