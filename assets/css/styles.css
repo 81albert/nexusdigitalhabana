@@ -46,6 +46,23 @@
     font-family: Arial, Helvetica, sans-serif;
 }
 
+/* Quitar highlight azul en tap (móvil WebKit/Chrome) */
+*:focus {
+    outline: none;
+}
+
+/* Versión específica para el efecto de toque */
+button,
+a,
+.product-card,
+.category-item,
+.thumb-btn,
+.variation-btn,
+.empty-btn,
+.product-detail-whatsapp {
+    -webkit-tap-highlight-color: transparent;
+}
+
 body {
     background: var(--gray);
 }
@@ -1049,6 +1066,25 @@ body {
   font-size: 16px;
   letter-spacing: 0.05em;
   color: var(--primary);
+}
+
+/* Tabs en móvil muy pequeño: 2 arriba, 1 abajo */
+@media (max-width: 460px) {
+  .tabs-header {
+    flex-wrap: wrap;
+    row-gap: 4px;
+    overflow-x: visible; /* ya no necesitamos scroll horizontal */
+  }
+
+  .tab-btn {
+    white-space: normal;       /* permite que el texto ocupe varias líneas */
+    flex: 1 1 50%;             /* dos botones por fila */
+    text-align: center;
+  }
+
+  .tab-btn:nth-child(3) {
+    flex-basis: 100%;          /* "Valoraciones" pasa a la fila de abajo ocupando todo el ancho */
+  }
 }
 
 .tab-btn.is-active {
