@@ -156,6 +156,9 @@ function formatSlug(str) {
 }
 
 function routeFromHash() {
+    // Cierra acordeones del footer al navegar
+    document.querySelectorAll('.footer-column.open').forEach(col => col.classList.remove('open'));
+
     const hash = (window.location.hash || '').replace('#', '').trim();
 
     if (!hash || hash === '/') {

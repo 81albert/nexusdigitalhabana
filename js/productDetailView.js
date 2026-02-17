@@ -1,5 +1,7 @@
 // js/productDetailView.js
-import { getProductBySlug } from "./products.js";
+import { getProductBySlug, getProductSiblings } from "./products.js";
+
+let _familyNavTimeout = null;
 
 /**
  * Renderiza la vista detalle del producto.
@@ -64,7 +66,7 @@ export function renderProductDetailView(slug, deps) {
         Array.isArray(product.variations) &&
         product.variations.length > 0
         ) ? `
-        <div class="product-variations" aria-label="Variaciones del producto">
+        <div class="product-variations selector-variation" aria-label="Variaciones del producto">
             <p class="variations-label">Variación:</p>
             <div class="variation-options" id="variationOptions">
             ${product.variations.map(v => `
@@ -77,6 +79,25 @@ export function renderProductDetailView(slug, deps) {
             </div>
         </div>
         ` : '';
+
+    // Familia: productos hermanos (cambia URL)
+    const siblings = getProductSiblings(product);
+    const familyHtml = (siblings.length > 1) ? `
+        <div class="product-family selector-family" aria-label="Productos de la familia">
+            <p class="family-label">${product.familyKey || 'Modelo'}:</p>
+            <div class="family-options" id="familyOptions">
+            ${siblings.map(s => `
+                <button type="button"
+                        class="family-btn frame-box ${s.slug === product.slug ? 'is-active' : ''}"
+                        data-slug="${s.slug}">
+                ${s.familyValue}
+                </button>
+            `).join('')}
+            </div>
+        </div>
+    ` : '';
+
+      container.classList.add('pd-fade', 'pd-fade-out');
 
       container.innerHTML = `
     <div class="product-detail-content">
@@ -104,6 +125,8 @@ export function renderProductDetailView(slug, deps) {
           <span class="price-label">Precio:</span>
           <span class="price-amount">$${price}</span>
         </p>
+
+        ${familyHtml}
 
         ${variationsHtml}
   
@@ -133,6 +156,12 @@ export function renderProductDetailView(slug, deps) {
       warmProductImages(images);
       setupImageZoomOverlay(() => images, product.name);
       setupVariationSelector(product, () => activeVariation, (v) => { activeVariation = v; }, () => images, (imgs) => { images = imgs; });
+      setupFamilySelector();
+
+      // Fade-in de la vista detalle (todo junto: contenido + tabs)
+      void container.offsetHeight; // forzar reflow
+      container.classList.remove('pd-fade-out');
+      container.classList.add('pd-fade-in');
   
       // Pintar contenido de tabs
       renderOverviewBlocks(product);
@@ -718,6 +747,40 @@ function setupVariationSelector(product, getActiveVar, setActiveVar, getImages, 
 
     // 6) performance
     warmProductImages(nextImages);
+  });
+}
+
+function setupFamilySelector() {
+  const wrap = document.getElementById('familyOptions');
+  if (!wrap) return;
+
+  wrap.addEventListener('click', (e) => {
+    const btn = e.target.closest('.family-btn');
+    if (!btn) return;
+
+    const slug = btn.dataset.slug;
+    if (!slug) return;
+
+    if (btn.classList.contains('is-active')) return;
+
+    // Cancelar timeout previo si el usuario hizo click rápido
+    if (_familyNavTimeout) {
+      clearTimeout(_familyNavTimeout);
+      _familyNavTimeout = null;
+    }
+
+    // Transición fade-out antes de navegar al hermano (todo el contenedor)
+    const detail = document.getElementById('productDetail');
+    if (detail) {
+      detail.classList.remove('pd-fade-in');
+      detail.classList.add('pd-fade-out');
+      _familyNavTimeout = setTimeout(() => {
+        _familyNavTimeout = null;
+        window.location.hash = `/p/${slug}`;
+      }, 160);
+    } else {
+      window.location.hash = `/p/${slug}`;
+    }
   });
 }
 
