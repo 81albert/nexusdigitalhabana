@@ -38,7 +38,7 @@
     background: var(--white);
 }
 
-/* Reset básico */
+/* Reset b?sico */
 * {
     margin: 0;
     padding: 0;
@@ -46,12 +46,12 @@
     font-family: Arial, Helvetica, sans-serif;
 }
 
-/* Quitar highlight azul en tap (móvil WebKit/Chrome) */
+/* Quitar highlight azul en tap (m?vil WebKit/Chrome) */
 *:focus {
     outline: none;
 }
 
-/* Versión específica para el efecto de toque */
+/* Versi?n espec?fica para el efecto de toque */
 button,
 a,
 .product-card,
@@ -95,7 +95,7 @@ body {
     height: 100%;
     display: flex;
     align-items: center;
-    justify-content: space-between; /* logo primero, botón a la derecha */
+    justify-content: space-between; /* logo primero, bot?n a la derecha */
     gap: var(--header-gap);
     flex-wrap: nowrap;
 }
@@ -125,14 +125,14 @@ body {
     padding-top: var(--header-min-height);
 }
 
-/* En tablet/móvil el header es más alto (2 filas), subimos el padding */
+/* En tablet/m?vil el header es m?s alto (2 filas), subimos el padding */
 @media (max-width: 685px) {
     .main-content {
         padding-top: 120px;
     }
 }
 
-/* Botón Categorías */
+/* Bot?n Categor?as */
 .btn-categories {
     display: flex;
     align-items: center;
@@ -215,7 +215,7 @@ body {
     background: var(--primary);
 }
 
-/* Botón WhatsApp */
+/* Bot?n WhatsApp */
 .btn-whatsapp {
     background: none;
     border: none;
@@ -419,7 +419,7 @@ body.sidebar-open .sidebar-overlay {
 /* Sidebar secundario */
 .sidebar-sub {
     left: 320px;              /* se coloca a la derecha del principal */
-    transform: translateX(0); /* posición natural */
+    transform: translateX(0); /* posici?n natural */
     opacity: 0;
     pointer-events: none;
     transition: opacity .3s ease;
@@ -455,7 +455,7 @@ body.sidebar-open .sidebar-overlay {
     font-size: 18px;
 }
 
-/* Categorías */
+/* Categor?as */
 .category-list,
 .subcategory-list {
     list-style: none;
@@ -509,7 +509,7 @@ body.sidebar-open .sidebar-overlay {
     height: 22px;
 }
 
-/*Categorías*/
+/*Categor?as*/
 .cat-left a {
     text-decoration: none;
     color: #000;
@@ -524,9 +524,9 @@ body.sidebar-open .sidebar-overlay {
     cursor: pointer;
 }
 
-/* Subcategorías */
+/* Subcategor?as */
 .subcategory-list li {
-    padding: 12px 0;          /* espacio vertical entre líneas de las Subcategorías*/
+    padding: 12px 0;          /* espacio vertical entre l?neas de las Subcategor?as*/
 }
 
 .subcategory-list a {
@@ -537,7 +537,7 @@ body.sidebar-open .sidebar-overlay {
 }
 
 /* =========================
-   MÓVIL: subcategorías en acordeón
+   M?VIL: subcategor?as en acorde?n
 ========================= */
 @media (max-width: 768px) {
 
@@ -557,7 +557,7 @@ body.sidebar-open .sidebar-overlay {
     }
 
     .category-item.open .subcategory-inline {
-        max-height: 500px; /* suficiente para tus subcategorías */
+        max-height: 500px; /* suficiente para tus subcategor?as */
         opacity: 1;
     }
 
@@ -617,16 +617,146 @@ body {
 .footer-banner {
     width: 100%;
     line-height: 0;
-	overflow: hidden; /* recorta la imagen si es más grande que el contenedor */
+	overflow: hidden; /* recorta la imagen si es m?s grande que el contenedor */
+    position: relative; /* para posicionar el contenido sobre la imagen */
 }
 
-.footer-banner img {
+.footer-banner > img {
     display: block;
 	width: auto; /* mantiene el ancho original de la imagen */
     height: auto; /* mantiene la altura original proporcional */
 	max-width: none; /* asegura que no se limite el ancho */
 	transform: scale(0.6);   /* 70% */
     transform-origin: bottom left; /* queda pegada abajo a la barra */
+}
+
+/* Contenido del footer sobre la imagen */
+.footer-content {
+    position: absolute;
+    left: 60px; /* AJUSTAR: posici?n desde la izquierda */
+    top: 80px;  /* AJUSTAR: posici?n desde arriba */
+    display: flex;
+    gap: 80px;  /* AJUSTAR: espacio entre columnas */
+    z-index: 1; /* por encima de la imagen */
+}
+
+.footer-column {
+    display: flex;
+    flex-direction: column;
+}
+
+.footer-column:last-child {
+    margin-left: 50px; /* AJUSTAR: espacio extra antes de la 3ra columna */
+}
+
+.footer-column-title {
+    font-size: 18px;
+    font-weight: 700;
+    font-style: italic;
+    color: var(--secondary);
+    margin: 0 0 24px;
+}
+
+.footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.footer-links li {
+    font-size: 14px;
+    color: var(--secondary);
+    line-height: 1.6;
+}
+
+.footer-links a {
+    color: var(--secondary);
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+}
+
+.footer-links a:hover {
+    opacity: 0.8;
+}
+
+.footer-social-icon {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    vertical-align: middle;
+    margin-right: 6px;
+}
+
+/* Footer movil: acordeon */
+@media (max-width: 864px) {
+    .footer {
+        position: relative; /* el contenido se posiciona relativo al footer */
+    }
+
+    .footer-banner {
+        position: static; /* quita position:relative para que no recorte el contenido */
+        /* overflow: hidden se mantiene del bloque general para recortar la imagen */
+    }
+
+    .footer-content {
+        position: absolute;
+        left: 24px;   /* AJUSTAR: posicion desde la izquierda */
+        bottom: 105px; /* AJUSTAR: posicion desde abajo */
+        top: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        z-index: 1;
+    }
+
+    .footer-column {
+        border-bottom: none;
+    }
+
+    .footer-column:last-child {
+        margin-left: 0; /* anula el margen extra de desktop */
+    }
+
+    .footer-column-title {
+        margin: 0;
+        padding: 16px 0;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        position: relative;
+    }
+
+    .footer-column-title::after {
+        content: '>';
+        font-style: normal;
+        font-size: 16px;
+        color: var(--secondary);
+        transition: transform 0.3s ease;
+        position: absolute;
+        left: 155px; /* AJUSTAR: mover hasta que quede pegada al texto "Contacto Directo" */
+    }
+
+    .footer-column.open .footer-column-title::after {
+        transform: rotate(90deg);
+    }
+
+    .footer-links {
+        max-height: 0;
+        overflow: hidden;
+        opacity: 0;
+        transition: max-height 0.35s ease, opacity 0.25s ease;
+        padding-left: 12px;
+		padding-top: 8px
+    }
+
+    .footer-column.open .footer-links {
+        max-height: 300px;
+        opacity: 1;
+        padding-bottom: 10px;
+    }
 }
 
 /* Barra inferior tipo header */
@@ -724,7 +854,7 @@ body {
     color: var(--secondary);
 }
 
-/* Botón */
+/* Bot?n */
 
 .product-btn {
     margin-top: 10px;
@@ -743,7 +873,7 @@ body {
 }
 
 /* =========================
-   Estado vacío (Productos)
+   Estado vac?o (Productos)
 ========================= */
 
 .products-empty {
@@ -874,7 +1004,7 @@ body {
     
     .product-detail-content {
         --pd-left: 630px;
-        --pd-right: 650px; /* ancho máximo de la columna derecha */
+        --pd-right: 650px; /* ancho m?ximo de la columna derecha */
         --pd-gap: 32px;
 
         grid-template-columns: var(--pd-left) var(--pd-right);
@@ -931,7 +1061,7 @@ body {
 }
 
 /* =========================
-   Galería detalle: miniaturas
+   Galer?a detalle: miniaturas
 ========================= */
 
 .product-thumbs {
@@ -973,7 +1103,7 @@ body {
     border-color: rgba(0,0,0,0.22);
 }
 
-/* Móvil: scroll horizontal */
+/* M?vil: scroll horizontal */
 @media (max-width: 768px) {
     .product-thumbs {
         flex-wrap: nowrap;
@@ -1072,7 +1202,7 @@ body {
   color: var(--primary);
 }
 
-/* Tabs en móvil muy pequeño: 2 arriba, 1 abajo */
+/* Tabs en m?vil muy peque?o: 2 arriba, 1 abajo */
 @media (max-width: 460px) {
   .tabs-header {
     flex-wrap: wrap;
@@ -1081,7 +1211,7 @@ body {
   }
 
   .tab-btn {
-    white-space: normal;       /* permite que el texto ocupe varias líneas */
+    white-space: normal;       /* permite que el texto ocupe varias l?neas */
     flex: 1 1 50%;             /* dos botones por fila */
     text-align: center;
   }
@@ -1264,7 +1394,7 @@ body {
   gap: 10px;
 }
 
-/*Flechas de navegación*/
+/*Flechas de navegaci?n*/
 .img-zoom-nav {
   width: 44px;
   height: 44px;
@@ -1300,7 +1430,7 @@ body {
 .img-zoom-thumbs {
   display: flex;
   gap: 10px;
-  overflow-x: auto;              /* móvil: deslizar */
+  overflow-x: auto;              /* m?vil: deslizar */
   -webkit-overflow-scrolling: touch;
   padding-bottom: 6px;
   scrollbar-width: thin;
@@ -1334,7 +1464,7 @@ body {
   border-color: var(--black); /* el frame-box ya tiene borde, aqu?lo hacemos destacar */
 }
 
-/* Desktop: cursor y un poquito más de aire */
+/* Desktop: cursor y un poquito m?s de aire */
 @media (min-width: 769px) {
   .img-zoom-main { cursor: default; }
 }
