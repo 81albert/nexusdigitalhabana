@@ -203,12 +203,22 @@ function routeFromHash() {
 
 document.addEventListener('DOMContentLoaded', () => {
 
+    const phone = '5350801563';
+    const defaultMsg = 'Hola, estoy interesado en uno de sus productos';
+
     const whatsappBtn = document.getElementById('whatsappBtn');
     if (whatsappBtn) {
         whatsappBtn.addEventListener('click', () => {
-            const phone = '5350801563';
-            const message = 'Hola, estoy interesado en uno de sus productos';
-            const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+            const url = `https://wa.me/${phone}?text=${encodeURIComponent(defaultMsg)}`;
+            window.open(url, '_blank', 'noopener');
+        });
+    }
+
+    const footerWhatsapp = document.getElementById('footerWhatsapp');
+    if (footerWhatsapp) {
+        footerWhatsapp.addEventListener('click', (e) => {
+            e.preventDefault();
+            const url = `https://wa.me/${phone}?text=${encodeURIComponent(defaultMsg)}`;
             window.open(url, '_blank', 'noopener');
         });
     }
@@ -390,6 +400,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
 routeFromHash();
 window.addEventListener('hashchange', routeFromHash);
+
+// Footer: acordeón en móvil
+document.querySelectorAll('.footer-column-title').forEach(title => {
+    title.addEventListener('click', () => {
+        const column = title.closest('.footer-column');
+        if (!column) return;
+
+        // Cierra las demás columnas
+        document.querySelectorAll('.footer-column.open').forEach(col => {
+            if (col !== column) col.classList.remove('open');
+        });
+
+        // Toggle la actual
+        column.classList.toggle('open');
+    });
+});
 });
 
 
